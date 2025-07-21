@@ -8,7 +8,7 @@ public static class ApplicationDependencyInject
 {
     public static IServiceCollection InjectServices(this IServiceCollection services)
     {
-        services.AddScoped<ICreateGuiaDePescaService, CreateGuiaDePescaService>();
+        services.AddScoped<IGuiaDePescaService, GuiaDePescaService>();
         return services;
     }
 }
