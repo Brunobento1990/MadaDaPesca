@@ -1,6 +1,8 @@
-﻿using MadaDaPesca.Domain.Interfaces;
+﻿using MadaDaPesca.Application.Interfaces;
+using MadaDaPesca.Domain.Interfaces;
 using MadaDaPesca.Infra.Context;
 using MadaDaPesca.Infra.Repositories;
+using MadaDaPesca.Infra.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +14,7 @@ public static class InfraDependencyInject
     {
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IGuiaDePescaRepository, GuiaDePescaRepository>();
+        services.AddScoped<IEmailService, EmailService>();
         return services;
     }
 

@@ -21,7 +21,7 @@ internal class PessoaConfiguration : BaseEntityConfiguration<Pessoa>
 
         builder.Property(x => x.Email)
             .IsRequired()
-            .HasMaxLength(11);
+            .HasMaxLength(255);
 
         builder.HasIndex(x => x.Cpf);
         builder.HasIndex(x => x.Email);

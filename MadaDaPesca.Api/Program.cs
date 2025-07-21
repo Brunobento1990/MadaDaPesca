@@ -29,6 +29,10 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 
+app.UseSerilogRequestLogging();
+
+app.UseMiddlewareConfiguration();
+
 app.UseAuthorization();
 
 app.MapControllers();
