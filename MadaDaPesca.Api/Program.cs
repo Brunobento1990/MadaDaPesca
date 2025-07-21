@@ -13,6 +13,7 @@ builder.Services.ConfigureControllers()
 builder.Services
     .InjectServices()
     .InjectRepositories()
+    .InjectJwt(builder.Configuration["Jwt:Key"]!, builder.Configuration["Jwt:Issue"]!, builder.Configuration["Jwt:Audience"]!)
     .InjectDbContext(builder.Configuration["ConnectionStrings:Conexao"]!);
 
 LogService.ConfigureLog(builder.Configuration["Seq:Url"]!);
