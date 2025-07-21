@@ -3,6 +3,8 @@ using MadaDaPesca.Application.DTOs;
 using MadaDaPesca.Application.Interfaces;
 using MadaDaPesca.Application.ViewModel;
 using MadaDaPesca.Domain.Entities;
+using MadaDaPesca.Domain.Exceptions;
+using MadaDaPesca.Domain.Extensions;
 using MadaDaPesca.Domain.Interfaces;
 
 namespace MadaDaPesca.Application.Services;
@@ -20,11 +22,26 @@ internal class GuiaDePescaService : IGuiaDePescaService
     {
         guiaDePescaCreateDTO.Validar();
 
-        var guia = GuiaDePesca.Novo(cpf: guiaDePescaCreateDTO.Cpf,
-                                    nome: guiaDePescaCreateDTO.Nome,
-                                    telefone: guiaDePescaCreateDTO.Telefone,
-                                    email: guiaDePescaCreateDTO.Email,
-                                    senha: PasswordAdapter.GenerateHash(guiaDePescaCreateDTO.Senha));
+        var guiaExistente = await _guiaDePescaRepository
+            .ObterParaValidarAsync(guiaDePescaCreateDTO.Cpf.LimparMascaraCpf(), guiaDePescaCreateDTO.Email.Trim());
+
+        if (guiaExistente != null)
+        {
+            if (guiaExistente.Pessoa.Cpf == guiaDePescaCreateDTO.Cpf.LimparMascaraCpf())
+            {
+                throw new ValidacaoException("Já existe um guia de pesca cadastrado com o CPF informado.");
+            }
+            if (guiaExistente.Pessoa.Email == guiaDePescaCreateDTO.Email.Trim())
+            {
+                throw new ValidacaoException("Já existe um guia de pesca cadastrado com o e-mail informado.");
+            }
+        }
+
+        var guia = GuiaDePesca.Novo(cpf: guiaDePescaCreateDTO.Cpf.LimparMascaraCpf(),
+                                nome: guiaDePescaCreateDTO.Nome.Trim(),
+                                telefone: guiaDePescaCreateDTO.Telefone.LimparMascaraTelefone(),
+                                email: guiaDePescaCreateDTO.Email.Trim(),
+                                senha: PasswordAdapter.GenerateHash(guiaDePescaCreateDTO.Senha));
 
         await _guiaDePescaRepository.AddAsync(guia);
         await _guiaDePescaRepository.SaveChangesAsync();

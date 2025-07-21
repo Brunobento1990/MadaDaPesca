@@ -21,4 +21,31 @@ public static class StringExtensions
         }
         return value ?? "";
     }
+
+    public static string LimparMascaraCpf(this string cpf)
+    {
+        if (string.IsNullOrWhiteSpace(cpf))
+        {
+            return cpf;
+        }
+        return cpf
+            .Replace(".", "")
+            .Replace("-", "")
+            .Replace("/", "")
+            .Trim();
+    }
+
+    public static string LimparMascaraTelefone(this string telefone)
+    {
+        if (string.IsNullOrWhiteSpace(telefone))
+        {
+            return telefone;
+        }
+        return telefone
+            .Replace("(", "")
+            .Replace(")", "")
+            .Replace("-", "")
+            .Replace(" ", "")
+            .Trim();
+    }
 }
