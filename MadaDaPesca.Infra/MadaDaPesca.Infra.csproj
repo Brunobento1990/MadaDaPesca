@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MadaDaPesca.Application\MadaDaPesca.Application.csproj" />
     <ProjectReference Include="..\MadaDaPesca.Domain\MadaDaPesca.Domain.csproj" />
   </ItemGroup>
 
