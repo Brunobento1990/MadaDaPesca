@@ -2,7 +2,6 @@
 using MadaDaPesca.Application.Services;
 using MadaDaPesca.Domain.Enum;
 using MadaDaPesca.Domain.Exceptions;
-using System.Text.Json;
 
 namespace MadaDaPesca.Api.Middleware;
 
@@ -23,8 +22,8 @@ public class LogMiddleware
         }
         catch (ValidacaoException ex)
         {
-            LogService.LogApi("Erro de validação", exception: ex, tipoLogApiEnum: TipoLogApiEnum.Warning);
-            await HandleError(context, ex.Erro);
+            LogService.LogApi("Erro de validação", exception: ex, tipoLogApiEnum: TipoLogApiEnum.Information);
+            await HandleError(context, ex.Erro, statusCode: (int?)ex.HttpStatusCode ?? 400);
         }
         catch (Exception ex)
         {

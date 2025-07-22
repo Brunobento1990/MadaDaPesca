@@ -11,18 +11,23 @@ namespace MadaDaPesca.Application.Services;
 internal class TokenService : ITokenService
 {
     private readonly IConfiguration _configuration;
-    private readonly SymmetricSecurityKey _key;
-    private readonly SigningCredentials _credenciais;
     private readonly DateTime _expiresToken;
     private readonly DateTime _expiresRefreshToken;
+    public SymmetricSecurityKey Key { get; set; }
+    public SigningCredentials Credenciais { get; set; }
+    public string Issue { get; set; }
+    public string Audience { get; set; }
+
     public TokenService(IConfiguration configuration)
     {
         _configuration = configuration;
-        _key = new SymmetricSecurityKey(
+        Key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
-        _credenciais = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
+        Credenciais = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256);
         _expiresToken = DateTime.UtcNow.AddMinutes(int.Parse(configuration["Jwt:ExpireInMinutes"]!));
         _expiresRefreshToken = DateTime.UtcNow.AddDays(int.Parse(configuration["Jwt:ExpireRefreshInDays"]!));
+        Issue = _configuration["Jwt:Issue"]!;
+        Audience = _configuration["Jwt:Audience"]!;
     }
 
     public (string token, string refreshToken) GerarTokenGuiaDePesca(GuiaDePesca guiaDePesca)
@@ -51,10 +56,10 @@ internal class TokenService : ITokenService
     private JwtSecurityToken Gerar(List<Claim> claims, DateTime expires)
     {
         return new JwtSecurityToken(
-          issuer: _configuration["Jwt:Issue"]!,
-          audience: _configuration["Jwt:Audience"]!,
+          issuer: Issue,
+          audience: Audience,
           claims: claims,
           expires: expires,
-          signingCredentials: _credenciais);
+          signingCredentials: Credenciais);
     }
 }

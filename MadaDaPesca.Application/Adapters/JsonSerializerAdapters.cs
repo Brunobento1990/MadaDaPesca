@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using MadaDaPesca.Application.Services;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -18,6 +19,19 @@ public static class JsonSerializerAdapters
     public static string Serialize<T>(T body)
     {
         return JsonSerializer.Serialize(body, _options);
+    }
+
+    public static T? FromJson<T>(Stream body)
+    {
+        try
+        {
+            return JsonSerializer.Deserialize<T>(body, _options);
+        }
+        catch (Exception ex)
+        {
+            LogService.LogApi("Erro desserealização JSON", ex);
+            return default;
+        }
     }
 
     public static StringContent ToJson<T>(T body)

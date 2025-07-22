@@ -7,5 +7,6 @@ public static class MiddlewareConfiguration
     public static void UseMiddlewareConfiguration(this IApplicationBuilder app)
     {
         app.UseMiddleware<LogMiddleware>();
+        app.UseMiddleware<AutenticaMiddleware>();
     }
 }

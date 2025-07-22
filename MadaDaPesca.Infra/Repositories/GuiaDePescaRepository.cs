@@ -11,6 +11,15 @@ internal class GuiaDePescaRepository : GenericRepository<GuiaDePesca>, IGuiaDePe
     {
     }
 
+    public async Task<GuiaDePesca?> ObterParaValidarAcessoAsync(Guid id)
+    {
+        return await AppDbContext
+            .GuiasDePesca
+            .AsNoTracking()
+            .Include(g => g.AcessoGuiaDePesca)
+            .FirstOrDefaultAsync(x => x.Id == id);
+    }
+
     public async Task<GuiaDePesca?> ObterParaValidarAsync(string cpf, string email)
     {
         return await AppDbContext

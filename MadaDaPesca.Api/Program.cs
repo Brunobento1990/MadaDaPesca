@@ -13,8 +13,10 @@ builder.Services.ConfigureControllers()
 builder.Services
     .InjectServices()
     .InjectRepositories()
+    .InjectHttpClient(builder.Configuration)
     .InjectJwt(builder.Configuration["Jwt:Key"]!, builder.Configuration["Jwt:Issue"]!, builder.Configuration["Jwt:Audience"]!)
-    .InjectDbContext(builder.Configuration["ConnectionStrings:Conexao"]!);
+    .InjectDbContext(builder.Configuration["ConnectionStrings:Conexao"]!)
+    .AddCorsConfiguration(builder.Configuration["Origins"]!.Split("|"));
 
 LogService.ConfigureLog(builder.Configuration["Seq:Url"]!);
 builder.Host.UseSerilog();
@@ -35,6 +37,8 @@ app.UseSerilogRequestLogging();
 app.UseMiddlewareConfiguration();
 
 app.UseAuthorization();
+
+app.UseCors("base");
 
 app.MapControllers();
 
