@@ -31,13 +31,19 @@ public static class InfraDependencyInject
     public static IServiceCollection InjectHttpClient(this IServiceCollection services, IConfiguration configuration)
     {
         var urlMarHttpClient = configuration["Api:OpenMeteo:Url"];
+        var urlClimaHttpClient = configuration["Api:OpenMeteo:UrlClima"];
 
         services.AddHttpClient($"{HttpClientEnum.Open_meteo}", client =>
         {
             client.BaseAddress = new Uri(urlMarHttpClient!);
         });
+        services.AddHttpClient($"{HttpClientEnum.Open_meteo_Clima}", client =>
+        {
+            client.BaseAddress = new Uri(urlClimaHttpClient!);
+        });
 
         services.AddScoped<IMarHttpClient, MarHttpClient>();
+        services.AddScoped<IClimaHttpClient, ClimaHttpClient>();
         return services;
     }
 }

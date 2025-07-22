@@ -7,10 +7,12 @@ namespace MadaDaPesca.Application.Services;
 internal class HomeGuiaDePescaService : IHomeGuiaDePescaService
 {
     private readonly IMarService _marService;
+    private readonly IClimaService _climaService;
 
-    public HomeGuiaDePescaService(IMarService marService)
+    public HomeGuiaDePescaService(IMarService marService, IClimaService climaService)
     {
         _marService = marService;
+        _climaService = climaService;
     }
 
     public async Task<HomeViewModel> ObterAsync(HomeDTO homeDTO)
@@ -20,6 +22,7 @@ internal class HomeGuiaDePescaService : IHomeGuiaDePescaService
         if (homeDTO.Latitude.HasValue && homeDTO.Longitude.HasValue)
         {
             homeViewModel.InformacoesDoMar = await _marService.ObterInformacoesAsync(homeDTO.Latitude.Value, homeDTO.Longitude.Value);
+            homeViewModel.Clima = await _climaService.ObterAsync(homeDTO.Latitude.Value, homeDTO.Longitude.Value);
         }
 
         return homeViewModel;

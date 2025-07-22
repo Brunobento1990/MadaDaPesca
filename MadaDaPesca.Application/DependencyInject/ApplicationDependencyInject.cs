@@ -19,6 +19,7 @@ public static class ApplicationDependencyInject
         services.AddScoped<IMarService, MarService>();
         services.AddScoped<IHomeGuiaDePescaService, HomeGuiaDePescaService>();
         services.AddScoped<IGuiaDePescaLogado, GuiaDePescaLogado>();
+        services.AddScoped<IClimaService, ClimaService>();
         return services;
     }
 
