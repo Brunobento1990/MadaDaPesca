@@ -45,7 +45,13 @@ internal class MarHttpClient : IMarHttpClient
             AlturasDasOndas = resultado.Hourly.Wave_height,
             PrevisaoDeDias = previsaoDeDias,
             AlturasDaMare = resultado.Hourly.Sea_level_height_msl,
-            TemperaturasDoMar = resultado.Hourly.Sea_surface_temperature
+            TemperaturasDoMar = resultado.Hourly.Sea_surface_temperature,
+            UnidadeDeMedida = new UnidadeDeMedidaMarViewModel
+            {
+                AlturaDaMare = resultado.Hourly_units.Wave_height,
+                AlturaDaOnda = resultado.Hourly_units.Sea_level_height_msl,
+                TemperaturaDoMar = resultado.Hourly_units.Sea_surface_temperature
+            }
         };
     }
 }
