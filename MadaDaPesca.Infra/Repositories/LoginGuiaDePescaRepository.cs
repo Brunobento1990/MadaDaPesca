@@ -23,4 +23,14 @@ internal class LoginGuiaDePescaRepository : ILoginGuiaDePescaRepository
             .Include(x => x.AcessoGuiaDePesca)
             .FirstOrDefaultAsync(x => x.Pessoa.Cpf == cpf && !x.Excluido && !x.Pessoa.Excluido);
     }
+
+    public async Task<GuiaDePesca?> LoginComGoogleAsync(string email)
+    {
+        return await _appDbContext
+            .GuiasDePesca
+            .AsNoTracking()
+            .Include(x => x.Pessoa)
+            .Include(x => x.AcessoGuiaDePesca)
+            .FirstOrDefaultAsync(x => x.Pessoa.Email == email && !x.Excluido && !x.Pessoa.Excluido);
+    }
 }

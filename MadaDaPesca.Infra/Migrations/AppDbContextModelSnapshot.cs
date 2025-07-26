@@ -48,9 +48,99 @@ namespace MadaDaPesca.Infra.Migrations
                     b.Property<Guid?>("TokenEsqueceuSenha")
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime?>("TrocouSenha")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
                     b.ToTable("AcessosGuiasDePesca");
+                });
+
+            modelBuilder.Entity("MadaDaPesca.Domain.Entities.AgendaPescaria", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<short>("Ano")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("DataDeAtualizacao")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<DateTime>("DataDeCadastro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<short>("Dia")
+                        .HasColumnType("smallint");
+
+                    b.Property<bool>("Excluido")
+                        .HasColumnType("boolean");
+
+                    b.Property<short?>("HoraFinal")
+                        .HasColumnType("smallint");
+
+                    b.Property<short?>("HoraInicial")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("Mes")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Observacao")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<Guid>("PescariaId")
+                        .HasColumnType("uuid");
+
+                    b.Property<short?>("QuantidadeDePescador")
+                        .HasColumnType("smallint");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Ano");
+
+                    b.HasIndex("Dia");
+
+                    b.HasIndex("Excluido");
+
+                    b.HasIndex("Mes");
+
+                    b.HasIndex("PescariaId");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("Dia", "Mes", "Ano");
+
+                    b.ToTable("AgendaPescarias");
+                });
+
+            modelBuilder.Entity("MadaDaPesca.Domain.Entities.GaleriaAgendaPescaria", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AgendaPescariaId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AgendaPescariaId");
+
+                    b.ToTable("GaleriaAgendaPescaria");
                 });
 
             modelBuilder.Entity("MadaDaPesca.Domain.Entities.GuiaDePesca", b =>
@@ -97,6 +187,27 @@ namespace MadaDaPesca.Infra.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("BloquearDomingo")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("BloquearQuartaFeira")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("BloquearQuintaFeira")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("BloquearSabado")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("BloquearSegundaFeira")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("BloquearSextaFeira")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("BloquearTercaFeira")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime>("DataDeAtualizacao")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -118,16 +229,22 @@ namespace MadaDaPesca.Infra.Migrations
                     b.Property<Guid>("GuiaDePescaId")
                         .HasColumnType("uuid");
 
+                    b.Property<short?>("HoraFinal")
+                        .HasColumnType("smallint");
+
+                    b.Property<short?>("HoraInicial")
+                        .HasColumnType("smallint");
+
                     b.Property<string>("Local")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<int>("QuantidadePescador")
-                        .HasColumnType("integer");
+                    b.Property<short?>("QuantidadeMaximaDeAgendamentosNoDia")
+                        .HasColumnType("smallint");
 
-                    b.Property<int>("TempoDeDuracao")
-                        .HasColumnType("integer");
+                    b.Property<short?>("QuantidadePescador")
+                        .HasColumnType("smallint");
 
                     b.Property<string>("Titulo")
                         .IsRequired()
@@ -185,6 +302,10 @@ namespace MadaDaPesca.Infra.Migrations
                         .HasMaxLength(11)
                         .HasColumnType("character varying(11)");
 
+                    b.Property<string>("UrlFoto")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Cpf");
@@ -196,6 +317,28 @@ namespace MadaDaPesca.Infra.Migrations
                     b.HasIndex("Nome");
 
                     b.ToTable("Pessoas");
+                });
+
+            modelBuilder.Entity("MadaDaPesca.Domain.Entities.AgendaPescaria", b =>
+                {
+                    b.HasOne("MadaDaPesca.Domain.Entities.Pescaria", "Pescaria")
+                        .WithMany("Agendamentos")
+                        .HasForeignKey("PescariaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pescaria");
+                });
+
+            modelBuilder.Entity("MadaDaPesca.Domain.Entities.GaleriaAgendaPescaria", b =>
+                {
+                    b.HasOne("MadaDaPesca.Domain.Entities.AgendaPescaria", "AgendaPescaria")
+                        .WithMany("Galeria")
+                        .HasForeignKey("AgendaPescariaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AgendaPescaria");
                 });
 
             modelBuilder.Entity("MadaDaPesca.Domain.Entities.GuiaDePesca", b =>
@@ -228,9 +371,19 @@ namespace MadaDaPesca.Infra.Migrations
                     b.Navigation("GuiaDePesca");
                 });
 
+            modelBuilder.Entity("MadaDaPesca.Domain.Entities.AgendaPescaria", b =>
+                {
+                    b.Navigation("Galeria");
+                });
+
             modelBuilder.Entity("MadaDaPesca.Domain.Entities.GuiaDePesca", b =>
                 {
                     b.Navigation("Pescarias");
+                });
+
+            modelBuilder.Entity("MadaDaPesca.Domain.Entities.Pescaria", b =>
+                {
+                    b.Navigation("Agendamentos");
                 });
 #pragma warning restore 612, 618
         }

@@ -15,11 +15,13 @@ internal class GuiaDePescaService : IGuiaDePescaService
     private readonly IGuiaDePescaRepository _guiaDePescaRepository;
     private readonly IEmailService _emailService;
     private readonly IConfiguration _configuration;
-    public GuiaDePescaService(IGuiaDePescaRepository guiaDePescaRepository, IEmailService emailService, IConfiguration configuration)
+    private readonly IUploadImagemService _uploadImagemService;
+    public GuiaDePescaService(IGuiaDePescaRepository guiaDePescaRepository, IEmailService emailService, IConfiguration configuration, IUploadImagemService uploadImagemService)
     {
         _guiaDePescaRepository = guiaDePescaRepository;
         _emailService = emailService;
         _configuration = configuration;
+        _uploadImagemService = uploadImagemService;
     }
 
     public async Task<GuiaDePescaViewModel> CreateAsync(GuiaDePescaCreateDTO guiaDePescaCreateDTO)
@@ -43,11 +45,21 @@ internal class GuiaDePescaService : IGuiaDePescaService
             throw new ValidacaoException(erros);
         }
 
+        string? urlFoto = guiaDePescaCreateDTO.UrlFoto;
+        var id = Guid.NewGuid();
+
+        if (!string.IsNullOrEmpty(guiaDePescaCreateDTO.UrlFoto) && !guiaDePescaCreateDTO.UrlFoto.ToLower().StartsWith("http"))
+        {
+            urlFoto = await _uploadImagemService.UploadAsync(guiaDePescaCreateDTO.UrlFoto, id);
+        }
+
         var guia = GuiaDePesca.Novo(cpf: guiaDePescaCreateDTO.Cpf.LimparMascaraCpf(),
                                 nome: guiaDePescaCreateDTO.Nome.Trim(),
                                 telefone: guiaDePescaCreateDTO.Telefone.LimparMascaraTelefone(),
                                 email: guiaDePescaCreateDTO.Email.Trim(),
-                                senha: PasswordAdapter.GenerateHash(guiaDePescaCreateDTO.Senha));
+                                senha: PasswordAdapter.GenerateHash(guiaDePescaCreateDTO.Senha),
+                                urlFoto: urlFoto,
+                                id: id);
 
         await _guiaDePescaRepository.AddAsync(guia);
         await _guiaDePescaRepository.SaveChangesAsync();

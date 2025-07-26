@@ -14,11 +14,13 @@ internal class LoginGuiaDePescaService : ILoginGuiaDePescaService
     private readonly ILoginGuiaDePescaRepository _loginGuiaDePescaRepository;
     private readonly ITokenService _tokenService;
     private readonly IConfiguration _configuration;
-    public LoginGuiaDePescaService(ILoginGuiaDePescaRepository loginGuiaDePescaRepository, ITokenService tokenService, IConfiguration configuration)
+    private readonly IGoogleAuthHttpClient _googleAuthHttpClient;
+    public LoginGuiaDePescaService(ILoginGuiaDePescaRepository loginGuiaDePescaRepository, ITokenService tokenService, IConfiguration configuration, IGoogleAuthHttpClient googleAuthHttpClient)
     {
         _loginGuiaDePescaRepository = loginGuiaDePescaRepository;
         _tokenService = tokenService;
         _configuration = configuration;
+        _googleAuthHttpClient = googleAuthHttpClient;
     }
 
     public async Task<LoginGuiaDePescaViewModel> LoginAsync(LoginDTO loginDTO)
@@ -26,20 +28,31 @@ internal class LoginGuiaDePescaService : ILoginGuiaDePescaService
         var guia = await _loginGuiaDePescaRepository.LoginAsync(loginDTO.Cpf.LimparMascaraCpf())
             ?? throw new ValidacaoException("Não foi possível localizar seu cadastro");
 
-        if (guia.AcessoGuiaDePesca.AcessoBloqueado)
-        {
-            throw new ValidacaoException("Seu acesso está bloqueado, entre em contato com o suporte");
-        }
-
-        if (!guia.AcessoGuiaDePesca.EmailVerificado)
-        {
-            throw new ValidacaoException("Seu e-mail não foi verificado, verifique sua caixa de entrada ou spam");
-        }
+        guia.ValidarAcesso();
 
         if (!PasswordAdapter.VerifyPassword(loginDTO.Senha, guia.AcessoGuiaDePesca.Senha))
         {
             throw new ValidacaoException("Senha incorreta");
         }
+
+        var (token, refreshToken) = _tokenService.GerarTokenGuiaDePesca(guia);
+
+        return new()
+        {
+            GuiaDePesca = (GuiaDePescaViewModel)guia,
+            TokenSchema = _configuration["Jwt:Schema"]!,
+            Token = token,
+            RefreshToken = refreshToken
+        };
+    }
+
+    public async Task<LoginGuiaDePescaViewModel> LoginComGoogleAsync(LoginComGoogleDTO loginComGoogleDTO)
+    {
+        var responseGoogle = await _googleAuthHttpClient.ValidarTokenGoogleAsync(loginComGoogleDTO.Token);
+        var guia = await _loginGuiaDePescaRepository.LoginComGoogleAsync(responseGoogle.Email)
+            ?? throw new ValidacaoException("Não foi possível localizar seu cadastro");
+
+        guia.ValidarAcesso();
 
         var (token, refreshToken) = _tokenService.GerarTokenGuiaDePesca(guia);
 

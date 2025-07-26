@@ -16,6 +16,7 @@ internal class PescariaConfiguration : BaseEntityConfiguration<Pescaria>
         builder.Property(x => x.Local)
             .IsRequired()
             .HasMaxLength(100);
+        builder.Ignore(x => x.QuantidadeDeHorasPescaria);
         base.Configure(builder);
     }
 }

@@ -13,6 +13,17 @@ public static class StringExtensions
         return value;
     }
 
+    public static string RemoverAcentos(this string text)
+    {
+        string withDiacritics = "ÄÅÁÂÀÃäáâàãÉÊËÈéêëèÍÎÏÌíîïìÖÓÔÒÕöóôòõÜÚÛüúûùÇç";
+        string withoutDiacritics = "AAAAAAaaaaaEEEEeeeeIIIIiiiiOOOOOoooooUUUuuuuCc";
+        for (int i = 0; i < withDiacritics.Length; i++)
+        {
+            text = text.Replace(withDiacritics[i].ToString(), withoutDiacritics[i].ToString());
+        }
+        return text;
+    }
+
     public static string ValidarLength(this string value, int length, string erro)
     {
         if (value?.Length > length)

@@ -2,12 +2,9 @@
 using MadaDaPesca.Application.Interfaces;
 using MadaDaPesca.Domain.Exceptions;
 using MadaDaPesca.Domain.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Text;
 
 namespace MadaDaPesca.Api.Middleware;
 
@@ -96,6 +93,7 @@ public class AutenticaMiddleware
             if (isGuia)
             {
                 await ValidarAcessoGuiaDePesca(idParse, guiaDePescaRepository);
+                guiaDePescaLogado.Id = idParse;
             }
 
         }
@@ -114,19 +112,6 @@ public class AutenticaMiddleware
         var guiaDePesca = await guiaDePescaRepository.ObterParaValidarAcessoAsync(id)
             ?? throw new ValidacaoException("Não foi possível localizar seu cadastro para o acesso a API", httpStatusCode: System.Net.HttpStatusCode.Unauthorized);
 
-        if (guiaDePesca.AcessoGuiaDePesca.AcessoBloqueado)
-        {
-            throw new ValidacaoException("Acesso bloqueado, entre em contato com o suporte", httpStatusCode: System.Net.HttpStatusCode.Unauthorized);
-        }
-
-        if (!guiaDePesca.AcessoGuiaDePesca.EmailVerificado)
-        {
-            throw new ValidacaoException("Seu e-mail ainda não foi confirmado, verifique se e-mail", httpStatusCode: System.Net.HttpStatusCode.Unauthorized);
-        }
-
-        if (guiaDePesca.Excluido)
-        {
-            throw new ValidacaoException("Seu cadastro se encontra com status excluído", httpStatusCode: System.Net.HttpStatusCode.Unauthorized);
-        }
+        guiaDePesca.ValidarAcesso();
     }
 }

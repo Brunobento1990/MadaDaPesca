@@ -11,17 +11,20 @@ public sealed class Pessoa : BaseEntity
         string cpf,
         string nome,
         string telefone,
-        string email)
+        string email,
+        string? urlFoto)
             : base(id, dataDeCadastro, dataDeAtualizacao, excluido)
     {
         Cpf = cpf;
         Nome = nome;
         Telefone = telefone;
         Email = email;
+        UrlFoto = urlFoto;
     }
 
     public string Cpf { get; private set; }
     public string Nome { get; private set; }
     public string Telefone { get; private set; }
     public string Email { get; private set; }
+    public string? UrlFoto { get; private set; }
 }

@@ -24,4 +24,13 @@ public class LoginController : ControllerBase
         var result = await _loginGuiaDePescaService.LoginAsync(loginDTO);
         return Ok(result);
     }
+
+    [HttpPost("guia-de-pesca/google")]
+    [ProducesResponseType<LoginGuiaDePescaViewModel>(200)]
+    [ProducesResponseType<ErrorViewModel>(400)]
+    public async Task<IActionResult> LoginComGoogleAsync([FromBody] LoginComGoogleDTO loginComGoogleDTO)
+    {
+        var result = await _loginGuiaDePescaService.LoginComGoogleAsync(loginComGoogleDTO);
+        return Ok(result);
+    }
 }

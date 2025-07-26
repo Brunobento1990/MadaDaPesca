@@ -14,7 +14,7 @@ public class GuiaDePescaController : ControllerBase
         _guiaDePescaService = guiaDePescaService;
     }
 
-    [HttpPost("criar")]
+    [HttpPost("cadastrar")]
     public async Task<IActionResult> CreateGuia([FromBody] GuiaDePescaCreateDTO guiaDePescaCreateDTO)
     {
         var guia = await _guiaDePescaService.CreateAsync(guiaDePescaCreateDTO);

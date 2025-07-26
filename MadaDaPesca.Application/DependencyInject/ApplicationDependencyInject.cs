@@ -20,6 +20,11 @@ public static class ApplicationDependencyInject
         services.AddScoped<IHomeGuiaDePescaService, HomeGuiaDePescaService>();
         services.AddScoped<IGuiaDePescaLogado, GuiaDePescaLogado>();
         services.AddScoped<IClimaService, ClimaService>();
+        services.AddScoped<IPescariaService, PescariaService>();
+        services.AddScoped<IAgendaPescariaService, AgendaPescariaService>();
+        services.AddScoped<IConfirmarContaGuiaDePescaService, ConfirmarContaGuiaDePescaService>();
+        services.AddScoped<IEsqueceuSenhaGuiaDePescaService, EsqueceuSenhaGuiaDePescaService>();
+        services.AddScoped<IRecuperarSenhaGuiaDePescaService, RecuperarSenhaGuiaDePescaService>();
         return services;
     }
 

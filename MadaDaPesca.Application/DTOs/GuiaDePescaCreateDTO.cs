@@ -7,6 +7,7 @@ public class GuiaDePescaCreateDTO
     public string Email { get; set; } = string.Empty;
     public string Senha { get; set; } = string.Empty;
     public string Telefone { get; set; } = string.Empty;
+    public string? UrlFoto { get; set; }
 
     public void Validar()
     {

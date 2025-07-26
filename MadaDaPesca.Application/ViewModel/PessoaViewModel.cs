@@ -8,6 +8,7 @@ public class PessoaViewModel : BaseViewModel
     public string Cpf { get; set; } = string.Empty;
     public string Telefone { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
+    public string? UrlFoto { get; set; }
 
     public static explicit operator PessoaViewModel(Pessoa pessoa)
     {
@@ -19,7 +20,8 @@ public class PessoaViewModel : BaseViewModel
             Nome = pessoa.Nome,
             Cpf = pessoa.Cpf,
             Telefone = pessoa.Telefone,
-            Email = pessoa.Email
+            Email = pessoa.Email,
+            UrlFoto = pessoa.UrlFoto
         };
     }
 }

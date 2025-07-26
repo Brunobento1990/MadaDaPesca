@@ -1,4 +1,6 @@
-﻿using MadaDaPesca.Domain.Extensions;
+﻿using MadaDaPesca.Domain.Exceptions;
+using MadaDaPesca.Domain.Extensions;
+using System;
 
 namespace MadaDaPesca.Domain.Entities;
 
@@ -28,7 +30,9 @@ public sealed class GuiaDePesca : BaseEntity
         string nome,
         string telefone,
         string email,
-        string senha)
+        string senha,
+        string? urlFoto,
+        Guid id)
     {
         cpf.ValidarNull("Informe o CPF")
             .ValidarLength(11, "O CPF deve conter no máximo 11 caracteres");
@@ -41,13 +45,14 @@ public sealed class GuiaDePesca : BaseEntity
         senha.ValidarNull("Informe a senha");
 
         var acessoGuiaDePesca = new AcessoGuiaDePesca(
-            id: Guid.NewGuid(),
+            id: id,
             senha: senha,
             primeiroAcesso: true,
             emailVerificado: false,
             tokenEsqueceuSenha: null,
             expiracaoTokenEsqueceuSenha: null,
-            acessoBloqueado: false);
+            acessoBloqueado: false,
+            trocouSenha: null);
 
         var pessoa = new Pessoa(
             id: Guid.NewGuid(),
@@ -57,7 +62,8 @@ public sealed class GuiaDePesca : BaseEntity
             cpf: cpf,
             nome: nome,
             telefone: telefone,
-            email: email);
+            email: email,
+            urlFoto: urlFoto);
 
         return new GuiaDePesca(
             id: Guid.NewGuid(),
@@ -70,5 +76,23 @@ public sealed class GuiaDePesca : BaseEntity
             AcessoGuiaDePesca = acessoGuiaDePesca,
             Pessoa = pessoa
         };
+    }
+
+    public void ValidarAcesso()
+    {
+        if (AcessoGuiaDePesca.AcessoBloqueado)
+        {
+            throw new ValidacaoException("Seu acesso está bloqueado, entre em contato com o suporte", httpStatusCode: System.Net.HttpStatusCode.Unauthorized);
+        }
+
+        if (Excluido)
+        {
+            throw new ValidacaoException("Seu acesso está excluído, entre em contato com o suporte", httpStatusCode: System.Net.HttpStatusCode.Unauthorized);
+        }
+
+        if (!AcessoGuiaDePesca.EmailVerificado)
+        {
+            throw new ValidacaoException("Seu e-mail não foi verificado, verifique sua caixa de entrada ou spam", httpStatusCode: System.Net.HttpStatusCode.Unauthorized);
+        }
     }
 }

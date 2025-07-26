@@ -11,6 +11,15 @@ internal class GuiaDePescaRepository : GenericRepository<GuiaDePesca>, IGuiaDePe
     {
     }
 
+    public async Task<GuiaDePesca?> ObterPorIdAsync(Guid id)
+    {
+        return await AppDbContext
+            .GuiasDePesca
+            .Include(g => g.Pessoa)
+            .Include(g => g.AcessoGuiaDePesca)
+            .FirstOrDefaultAsync(x => x.Id == id);
+    }
+
     public async Task<GuiaDePesca?> ObterParaValidarAcessoAsync(Guid id)
     {
         return await AppDbContext
@@ -27,5 +36,23 @@ internal class GuiaDePescaRepository : GenericRepository<GuiaDePesca>, IGuiaDePe
             .AsNoTracking()
             .Include(g => g.Pessoa)
             .FirstOrDefaultAsync(x => x.Pessoa.Cpf == cpf || x.Pessoa.Email == email);
+    }
+
+    public async Task<GuiaDePesca?> ObterPorCpfAsync(string cpf)
+    {
+        return await AppDbContext
+            .GuiasDePesca
+            .Include(g => g.Pessoa)
+            .Include(g => g.AcessoGuiaDePesca)
+            .FirstOrDefaultAsync(x => x.Pessoa.Cpf == cpf && !x.Excluido);
+    }
+
+    public async Task<GuiaDePesca?> ObterPorTokenEsqueceuSenhaAsync(Guid tokenEsqueceuSenha)
+    {
+        return await AppDbContext
+            .GuiasDePesca
+            .Include(g => g.Pessoa)
+            .Include(g => g.AcessoGuiaDePesca)
+            .FirstOrDefaultAsync(x => x.AcessoGuiaDePesca.TokenEsqueceuSenha == tokenEsqueceuSenha);
     }
 }

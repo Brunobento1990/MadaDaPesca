@@ -10,7 +10,8 @@ public sealed class AcessoGuiaDePesca
         bool emailVerificado,
         Guid? tokenEsqueceuSenha,
         DateTime? expiracaoTokenEsqueceuSenha,
-        bool acessoBloqueado)
+        bool acessoBloqueado,
+        DateTime? trocouSenha)
     {
         Id = id;
         Senha = senha;
@@ -19,6 +20,7 @@ public sealed class AcessoGuiaDePesca
         TokenEsqueceuSenha = tokenEsqueceuSenha;
         ExpiracaoTokenEsqueceuSenha = expiracaoTokenEsqueceuSenha;
         AcessoBloqueado = acessoBloqueado;
+        TrocouSenha = trocouSenha;
     }
     public Guid Id { get; private set; }
     public string Senha { get; private set; }
@@ -27,4 +29,25 @@ public sealed class AcessoGuiaDePesca
     public bool AcessoBloqueado { get; private set; }
     public Guid? TokenEsqueceuSenha { get; private set; }
     public DateTime? ExpiracaoTokenEsqueceuSenha { get; private set; }
+    public DateTime? TrocouSenha { get; private set; }
+
+    public void EsqueceuSenha()
+    {
+        TokenEsqueceuSenha = Guid.NewGuid();
+        ExpiracaoTokenEsqueceuSenha = DateTime.UtcNow.AddHours(1);
+    }
+
+    public void RecuperarSenha(string senha)
+    {
+        Senha = senha;
+        PrimeiroAcesso = false;
+        TokenEsqueceuSenha = null;
+        ExpiracaoTokenEsqueceuSenha = null;
+        TrocouSenha = DateTime.UtcNow;
+    }
+
+    public void VerificarEmail()
+    {
+        EmailVerificado = true;
+    }
 }

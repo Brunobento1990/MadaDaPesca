@@ -6,4 +6,5 @@ namespace MadaDaPesca.Application.Interfaces;
 public interface ILoginGuiaDePescaService
 {
     Task<LoginGuiaDePescaViewModel> LoginAsync(LoginDTO loginDTO);
+    Task<LoginGuiaDePescaViewModel> LoginComGoogleAsync(LoginComGoogleDTO loginComGoogleDTO);
 }

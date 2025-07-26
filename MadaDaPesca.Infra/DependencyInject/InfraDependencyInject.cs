@@ -19,6 +19,9 @@ public static class InfraDependencyInject
         services.AddScoped<IGuiaDePescaRepository, GuiaDePescaRepository>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<ILoginGuiaDePescaRepository, LoginGuiaDePescaRepository>();
+        services.AddScoped<IPescariaRepository, PescariaRepository>();
+        services.AddScoped<IAgendaPescariaRepository, AgendaPescariaRepository>();
+        services.AddScoped<IUploadImagemService, UploadImagemService>();
         return services;
     }
 
@@ -44,6 +47,7 @@ public static class InfraDependencyInject
 
         services.AddScoped<IMarHttpClient, MarHttpClient>();
         services.AddScoped<IClimaHttpClient, ClimaHttpClient>();
+        services.AddScoped<IGoogleAuthHttpClient, GoogleAuthHttpClient>();
         return services;
     }
 }

@@ -23,6 +23,9 @@ internal class PessoaConfiguration : BaseEntityConfiguration<Pessoa>
             .IsRequired()
             .HasMaxLength(255);
 
+        builder.Property(x => x.UrlFoto)
+            .HasMaxLength(1000);
+
         builder.HasIndex(x => x.Cpf);
         builder.HasIndex(x => x.Email);
         builder.HasIndex(x => x.Nome);

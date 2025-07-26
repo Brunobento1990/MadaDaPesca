@@ -6,4 +6,7 @@ public interface IGuiaDePescaRepository : IGenericRepository<GuiaDePesca>
 {
     Task<GuiaDePesca?> ObterParaValidarAsync(string cpf, string email);
     Task<GuiaDePesca?> ObterParaValidarAcessoAsync(Guid id);
+    Task<GuiaDePesca?> ObterPorIdAsync(Guid id);
+    Task<GuiaDePesca?> ObterPorCpfAsync(string cpf);
+    Task<GuiaDePesca?> ObterPorTokenEsqueceuSenhaAsync(Guid tokenEsqueceuSenha);
 }
