@@ -30,6 +30,6 @@ RUN dotnet publish "./MadaDaPesca.Api.csproj" -c $BUILD_CONFIGURATION -o /app/pu
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-COPY ["MapaDaPesca.Api/Htmls/", "/app/Htmls/"]
+COPY ["MadaDaPesca.Api/Htmls/", "/app/Htmls/"]
 ENV TZ=America/Sao_Paulo
 ENTRYPOINT ["dotnet", "MadaDaPesca.Api.dll"]
