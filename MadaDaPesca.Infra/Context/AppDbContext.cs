@@ -16,9 +16,11 @@ public class AppDbContext : DbContext
     public DbSet<Pessoa> Pessoas { get; set; }
     public DbSet<AgendaPescaria> AgendaPescarias { get; set; }
     public DbSet<GaleriaAgendaPescaria> GaleriaAgendaPescaria { get; set; }
+    public DbSet<Embarcacao> Embarcacoes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.ApplyConfiguration(new EmbarcacaoConfiguration());
         modelBuilder.ApplyConfiguration(new GaleriaAgendaPescariaConfiguration());
         modelBuilder.ApplyConfiguration(new AcessoGuiaDePescaConfiguration());
         modelBuilder.ApplyConfiguration(new GuiaDePescaConfiguration());

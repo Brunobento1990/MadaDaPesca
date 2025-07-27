@@ -17,6 +17,7 @@ public class PescariaDTO
     public bool BloquearSextaFeira { get; set; } = false;
     public bool BloquearSabado { get; set; } = false;
     public bool BloquearDomingo { get; set; } = false;
+    public Guid? EmbarcacaoId { get; set; }
 }
 
 public class PescariaEditarDTO : PescariaDTO

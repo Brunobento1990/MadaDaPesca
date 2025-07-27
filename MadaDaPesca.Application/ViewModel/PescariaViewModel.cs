@@ -22,6 +22,8 @@ public class PescariaViewModel : BaseViewModel
     public bool BloquearDomingo { get; set; } = false;
     public Guid GuiaDePescaId { get; set; }
     public GuiaDePescaViewModel GuiaDePesca { get; set; } = null!;
+    public Guid? EmbarcacaoId { get; set; }
+    public EmbarcacaoViewModel? Embarcacao { get; set; }
 
     public static explicit operator PescariaViewModel(Pescaria pescaria)
     {
@@ -47,7 +49,9 @@ public class PescariaViewModel : BaseViewModel
             BloquearQuartaFeira = pescaria.BloquearQuartaFeira,
             BloquearQuintaFeira = pescaria.BloquearQuintaFeira,
             BloquearSextaFeira = pescaria.BloquearSextaFeira,
-            BloquearSabado = pescaria.BloquearSabado
+            BloquearSabado = pescaria.BloquearSabado,
+            EmbarcacaoId = pescaria.EmbarcacaoId,
+            Embarcacao = pescaria.Embarcacao == null ? null : (EmbarcacaoViewModel)pescaria.Embarcacao
         };
     }
 }

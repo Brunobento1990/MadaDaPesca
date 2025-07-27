@@ -22,6 +22,7 @@ public static class InfraDependencyInject
         services.AddScoped<IPescariaRepository, PescariaRepository>();
         services.AddScoped<IAgendaPescariaRepository, AgendaPescariaRepository>();
         services.AddScoped<IUploadImagemService, UploadImagemService>();
+        services.AddScoped<IEmbarcacaoRepository, EmbarcacaoRepository>();
         return services;
     }
 

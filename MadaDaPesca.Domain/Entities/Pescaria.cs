@@ -26,7 +26,8 @@ public sealed class Pescaria : BaseEntity
         bool bloquearQuintaFeira,
         bool bloquearSextaFeira,
         bool bloquearSabado,
-        bool bloquearDomingo)
+        bool bloquearDomingo,
+        Guid? embarcacaoId)
             : base(id, dataDeCadastro, dataDeAtualizacao, excluido)
     {
         Titulo = titulo;
@@ -45,6 +46,7 @@ public sealed class Pescaria : BaseEntity
         BloquearSextaFeira = bloquearSextaFeira;
         BloquearSabado = bloquearSabado;
         BloquearDomingo = bloquearDomingo;
+        EmbarcacaoId = embarcacaoId;
     }
 
     public string Titulo { get; private set; }
@@ -76,6 +78,8 @@ public sealed class Pescaria : BaseEntity
     }
     public Guid GuiaDePescaId { get; private set; }
     public GuiaDePesca GuiaDePesca { get; set; } = null!;
+    public Guid? EmbarcacaoId { get; private set; }
+    public Embarcacao Embarcacao { get; set; } = null!;
     public IList<AgendaPescaria> Agendamentos { get; set; } = [];
 
     public void Excluir()
@@ -99,7 +103,8 @@ public sealed class Pescaria : BaseEntity
         bool bloquearQuintaFeira,
         bool bloquearSextaFeira,
         bool bloquearSabado,
-        bool bloquearDomingo)
+        bool bloquearDomingo,
+        Guid? embarcacaoId)
     {
         Titulo = titulo;
         Descricao = descricao;
@@ -116,6 +121,7 @@ public sealed class Pescaria : BaseEntity
         BloquearSextaFeira = bloquearSextaFeira;
         BloquearSabado = bloquearSabado;
         BloquearDomingo = bloquearDomingo;
+        EmbarcacaoId = embarcacaoId;
 
         Validar();
     }
@@ -136,7 +142,8 @@ public sealed class Pescaria : BaseEntity
         bool bloquearQuintaFeira,
         bool bloquearSextaFeira,
         bool bloquearSabado,
-        bool bloquearDomingo)
+        bool bloquearDomingo,
+        Guid? embarcacaoId)
     {
         var pescaria = new Pescaria(
             id: Guid.NewGuid(),
@@ -158,7 +165,8 @@ public sealed class Pescaria : BaseEntity
             bloquearQuintaFeira: bloquearQuintaFeira,
             bloquearSextaFeira: bloquearSextaFeira,
             bloquearSabado: bloquearSabado,
-            bloquearDomingo: bloquearDomingo);
+            bloquearDomingo: bloquearDomingo,
+            embarcacaoId: embarcacaoId);
 
         pescaria.Validar();
 

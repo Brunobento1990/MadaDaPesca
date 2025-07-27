@@ -2,6 +2,7 @@
 using MadaDaPesca.Application.Interfaces;
 using MadaDaPesca.Application.ViewModel;
 using MadaDaPesca.Domain.Entities;
+using MadaDaPesca.Domain.Exceptions;
 using MadaDaPesca.Domain.Interfaces;
 using MadaDaPesca.Domain.Models;
 
@@ -11,15 +12,25 @@ internal class PescariaService : IPescariaService
 {
     private readonly IPescariaRepository _pescariaRepository;
     private readonly IGuiaDePescaLogado _guiaDePescaLogado;
+    private readonly IEmbarcacaoRepository _embarcacaoRepository;
 
-    public PescariaService(IPescariaRepository pescariaRepository, IGuiaDePescaLogado guiaDePescaLogado)
+    public PescariaService(IPescariaRepository pescariaRepository, IGuiaDePescaLogado guiaDePescaLogado, IEmbarcacaoRepository embarcacaoRepository)
     {
         _pescariaRepository = pescariaRepository;
         _guiaDePescaLogado = guiaDePescaLogado;
+        _embarcacaoRepository = embarcacaoRepository;
     }
 
     public async Task<PescariaViewModel> CriarAsync(PescariaDTO pescariaDTO)
     {
+        Embarcacao? embarcacao = null;
+
+        if (pescariaDTO.EmbarcacaoId.HasValue)
+        {
+            embarcacao = await _embarcacaoRepository.ObterPorIdAsync(pescariaDTO.EmbarcacaoId.Value)
+                ?? throw new ValidacaoException("Embarcação não encontrada.");
+        }
+
         var pescaria = Pescaria.Criar(
             titulo: pescariaDTO.Titulo,
             descricao: pescariaDTO.Descricao,
@@ -36,7 +47,8 @@ internal class PescariaService : IPescariaService
             bloquearQuintaFeira: pescariaDTO.BloquearQuintaFeira,
             bloquearSextaFeira: pescariaDTO.BloquearSextaFeira,
             bloquearSabado: pescariaDTO.BloquearSabado,
-            bloquearDomingo: pescariaDTO.BloquearDomingo);
+            bloquearDomingo: pescariaDTO.BloquearDomingo,
+            embarcacaoId: embarcacao?.Id);
 
         await _pescariaRepository.AddAsync(pescaria);
         await _pescariaRepository.SaveChangesAsync();
@@ -47,6 +59,13 @@ internal class PescariaService : IPescariaService
     public async Task<PescariaViewModel> EditarAsync(PescariaEditarDTO pescariaEditarDTO)
     {
         var pescaria = await ObterAsync(pescariaEditarDTO.Id);
+        Embarcacao? embarcacao = null;
+
+        if (pescariaEditarDTO.EmbarcacaoId.HasValue)
+        {
+            embarcacao = await _embarcacaoRepository.ObterPorIdAsync(pescariaEditarDTO.EmbarcacaoId.Value)
+                ?? throw new ValidacaoException("Embarcação não encontrada.");
+        }
 
         pescaria.Editar(
             titulo: pescariaEditarDTO.Titulo,
@@ -63,7 +82,8 @@ internal class PescariaService : IPescariaService
             bloquearQuintaFeira: pescariaEditarDTO.BloquearQuintaFeira,
             bloquearSextaFeira: pescariaEditarDTO.BloquearSextaFeira,
             bloquearSabado: pescariaEditarDTO.BloquearSabado,
-            bloquearDomingo: pescariaEditarDTO.BloquearDomingo);
+            bloquearDomingo: pescariaEditarDTO.BloquearDomingo,
+            embarcacaoId: embarcacao?.Id);
 
         _pescariaRepository.Editar(pescaria);
         await _pescariaRepository.SaveChangesAsync();

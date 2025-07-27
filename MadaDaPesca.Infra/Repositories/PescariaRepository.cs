@@ -24,6 +24,7 @@ internal class PescariaRepository : GenericRepository<Pescaria>, IPescariaReposi
     {
         return await AppDbContext
             .Pescarias
+            .Include(x => x.Embarcacao)
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 }

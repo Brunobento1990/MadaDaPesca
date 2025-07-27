@@ -24,6 +24,7 @@ public sealed class GuiaDePesca : BaseEntity
     public Guid AcessoGuiaDePescaId { get; private set; }
     public AcessoGuiaDePesca AcessoGuiaDePesca { get; set; } = null!;
     public IList<Pescaria>? Pescarias { get; set; }
+    public IList<Embarcacao>? Embarcacoes { get; set; }
 
     public static GuiaDePesca Novo(
         string cpf,
