@@ -1,4 +1,7 @@
 ﻿
+using MadaDaPesca.Domain.Exceptions;
+using MadaDaPesca.Domain.Extensions;
+
 namespace MadaDaPesca.Domain.Entities;
 
 public sealed class Embarcacao : BaseEntity
@@ -50,6 +53,8 @@ public sealed class Embarcacao : BaseEntity
         Largura = largura;
         Comprimento = comprimento;
         QuantidadeDeLugar = quantidadeDeLugar;
+
+        Validar();
     }
 
     public void Excluir()
@@ -66,7 +71,7 @@ public sealed class Embarcacao : BaseEntity
         short? quantidadeDeLugar,
         Guid guiaDePescaId)
     {
-        return new Embarcacao(
+        var embarcacao = new Embarcacao(
             Guid.NewGuid(),
             DateTime.UtcNow,
             DateTime.UtcNow,
@@ -78,5 +83,24 @@ public sealed class Embarcacao : BaseEntity
             comprimento,
             quantidadeDeLugar,
             guiaDePescaId);
+
+        embarcacao.Validar();
+
+        return embarcacao;
+    }
+
+    public void Validar()
+    {
+        Nome = Nome.ValidarNull("Informe o nome")
+            .ValidarLength(255, "O nome deve conter no máximo 100 caracteres");
+        Motor = Motor?.ValidarLengthNull(255, "O motor deve conter no máximo 255 caracteres");
+        MotorEletrico = MotorEletrico?.ValidarLengthNull(255, "O motor elétrico deve conter no máximo 255 caracteres");
+        Largura = Largura?.ValidarLengthNull(255, "A largura deve conter no máximo 255 caracteres");
+        Comprimento = Comprimento?.ValidarLengthNull(255, "O comprimento deve conter no máximo 255 caracteres");
+
+        if (QuantidadeDeLugar <= 0)
+        {
+            throw new ValidacaoException("A quantidade de lugares deve ser maior que zero.");
+        }
     }
 }

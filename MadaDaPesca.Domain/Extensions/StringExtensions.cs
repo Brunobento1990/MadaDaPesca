@@ -33,6 +33,15 @@ public static class StringExtensions
         return value ?? "";
     }
 
+    public static string? ValidarLengthNull(this string? value, int length, string erro)
+    {
+        if (value?.Length > length)
+        {
+            throw new ValidacaoException(erro);
+        }
+        return value;
+    }
+
     public static string LimparMascaraCpf(this string cpf)
     {
         if (string.IsNullOrWhiteSpace(cpf))

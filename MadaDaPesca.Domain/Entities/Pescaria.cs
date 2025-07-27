@@ -1,6 +1,5 @@
 ﻿using MadaDaPesca.Domain.Exceptions;
 using MadaDaPesca.Domain.Extensions;
-using System.Threading;
 
 namespace MadaDaPesca.Domain.Entities;
 
@@ -27,7 +26,9 @@ public sealed class Pescaria : BaseEntity
         bool bloquearSextaFeira,
         bool bloquearSabado,
         bool bloquearDomingo,
-        Guid? embarcacaoId)
+        Guid? embarcacaoId,
+        double? latitude,
+        double? longitude)
             : base(id, dataDeCadastro, dataDeAtualizacao, excluido)
     {
         Titulo = titulo;
@@ -47,6 +48,8 @@ public sealed class Pescaria : BaseEntity
         BloquearSabado = bloquearSabado;
         BloquearDomingo = bloquearDomingo;
         EmbarcacaoId = embarcacaoId;
+        Latitude = latitude;
+        Longitude = longitude;
     }
 
     public string Titulo { get; private set; }
@@ -64,6 +67,8 @@ public sealed class Pescaria : BaseEntity
     public bool BloquearSextaFeira { get; private set; } = false;
     public bool BloquearSabado { get; private set; } = false;
     public bool BloquearDomingo { get; private set; } = false;
+    public double? Latitude { get; private set; }
+    public double? Longitude { get; private set; }
     public int? QuantidadeDeHorasPescaria
     {
         get
@@ -104,7 +109,9 @@ public sealed class Pescaria : BaseEntity
         bool bloquearSextaFeira,
         bool bloquearSabado,
         bool bloquearDomingo,
-        Guid? embarcacaoId)
+        Guid? embarcacaoId,
+        double? latitude,
+        double? longitude)
     {
         Titulo = titulo;
         Descricao = descricao;
@@ -122,6 +129,8 @@ public sealed class Pescaria : BaseEntity
         BloquearSabado = bloquearSabado;
         BloquearDomingo = bloquearDomingo;
         EmbarcacaoId = embarcacaoId;
+        Latitude = latitude;
+        Longitude = longitude;
 
         Validar();
     }
@@ -143,7 +152,9 @@ public sealed class Pescaria : BaseEntity
         bool bloquearSextaFeira,
         bool bloquearSabado,
         bool bloquearDomingo,
-        Guid? embarcacaoId)
+        Guid? embarcacaoId,
+        double? latitude,
+        double? longitude)
     {
         var pescaria = new Pescaria(
             id: Guid.NewGuid(),
@@ -166,7 +177,9 @@ public sealed class Pescaria : BaseEntity
             bloquearSextaFeira: bloquearSextaFeira,
             bloquearSabado: bloquearSabado,
             bloquearDomingo: bloquearDomingo,
-            embarcacaoId: embarcacaoId);
+            embarcacaoId: embarcacaoId,
+            latitude: latitude,
+            longitude: longitude);
 
         pescaria.Validar();
 

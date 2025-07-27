@@ -48,7 +48,9 @@ internal class PescariaService : IPescariaService
             bloquearSextaFeira: pescariaDTO.BloquearSextaFeira,
             bloquearSabado: pescariaDTO.BloquearSabado,
             bloquearDomingo: pescariaDTO.BloquearDomingo,
-            embarcacaoId: embarcacao?.Id);
+            embarcacaoId: embarcacao?.Id,
+            latitude: pescariaDTO.Latitude,
+            longitude: pescariaDTO.Longitude);
 
         await _pescariaRepository.AddAsync(pescaria);
         await _pescariaRepository.SaveChangesAsync();
@@ -83,7 +85,9 @@ internal class PescariaService : IPescariaService
             bloquearSextaFeira: pescariaEditarDTO.BloquearSextaFeira,
             bloquearSabado: pescariaEditarDTO.BloquearSabado,
             bloquearDomingo: pescariaEditarDTO.BloquearDomingo,
-            embarcacaoId: embarcacao?.Id);
+            embarcacaoId: embarcacao?.Id,
+            latitude: pescariaEditarDTO.Latitude,
+            longitude: pescariaEditarDTO.Longitude);
 
         _pescariaRepository.Editar(pescaria);
         await _pescariaRepository.SaveChangesAsync();

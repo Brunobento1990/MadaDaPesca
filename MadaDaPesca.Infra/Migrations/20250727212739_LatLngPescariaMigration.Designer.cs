@@ -3,6 +3,7 @@ using System;
 using MadaDaPesca.Infra.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MadaDaPesca.Infra.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250727212739_LatLngPescariaMigration")]
+    partial class LatLngPescariaMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -295,16 +298,16 @@ namespace MadaDaPesca.Infra.Migrations
                     b.Property<short?>("HoraInicial")
                         .HasColumnType("smallint");
 
-                    b.Property<double?>("Latitude")
-                        .HasColumnType("double precision");
+                    b.Property<long?>("Latitude")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Local")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<double?>("Longitude")
-                        .HasColumnType("double precision");
+                    b.Property<long?>("Longitude")
+                        .HasColumnType("bigint");
 
                     b.Property<short?>("QuantidadeMaximaDeAgendamentosNoDia")
                         .HasColumnType("smallint");

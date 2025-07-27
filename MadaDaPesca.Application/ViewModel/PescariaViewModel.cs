@@ -20,6 +20,8 @@ public class PescariaViewModel : BaseViewModel
     public bool BloquearSextaFeira { get; set; } = false;
     public bool BloquearSabado { get; set; } = false;
     public bool BloquearDomingo { get; set; } = false;
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
     public Guid GuiaDePescaId { get; set; }
     public GuiaDePescaViewModel GuiaDePesca { get; set; } = null!;
     public Guid? EmbarcacaoId { get; set; }
@@ -51,7 +53,9 @@ public class PescariaViewModel : BaseViewModel
             BloquearSextaFeira = pescaria.BloquearSextaFeira,
             BloquearSabado = pescaria.BloquearSabado,
             EmbarcacaoId = pescaria.EmbarcacaoId,
-            Embarcacao = pescaria.Embarcacao == null ? null : (EmbarcacaoViewModel)pescaria.Embarcacao
+            Embarcacao = pescaria.Embarcacao == null ? null : (EmbarcacaoViewModel)pescaria.Embarcacao,
+            Latitude = pescaria.Latitude,
+            Longitude = pescaria.Longitude
         };
     }
 }

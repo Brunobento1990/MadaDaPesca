@@ -17,6 +17,8 @@ public class PescariaDTO
     public bool BloquearSextaFeira { get; set; } = false;
     public bool BloquearSabado { get; set; } = false;
     public bool BloquearDomingo { get; set; } = false;
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
     public Guid? EmbarcacaoId { get; set; }
 }
 
