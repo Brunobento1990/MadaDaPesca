@@ -18,11 +18,11 @@ jobs:
       with:
         dotnet-version: '9.0.x'
     - name: Install dependencies
-      run: dotnet restore ./MapaDaPesca.Api
+      run: dotnet restore ./MadaDaPesca.Api
     - name: Build
-      run: dotnet build ./MapaDaPesca.Api --configuration Release
+      run: dotnet build ./MadaDaPesca.Api --configuration Release
     - name: Build-Image-Docker
-      run: docker build -f MapaDaPesca.Api/Dockerfile . -t brunobentocaina/mapa-da-pesca:${GITHUB_REF#refs/*/}
+      run: docker build -f MadaDaPesca.Api/Dockerfile . -t brunobentocaina/mapa-da-pesca:${GITHUB_REF#refs/*/}
     - name: Push
       run: |
         docker login -u brunobentocaina -p ${{ secrets.DOCKER_HUB_KEY }}
