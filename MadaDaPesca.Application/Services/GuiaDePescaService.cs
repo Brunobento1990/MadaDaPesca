@@ -26,8 +26,6 @@ internal class GuiaDePescaService : IGuiaDePescaService
 
     public async Task<GuiaDePescaViewModel> CreateAsync(GuiaDePescaCreateDTO guiaDePescaCreateDTO)
     {
-        guiaDePescaCreateDTO.Validar();
-
         var guiaExistente = await _guiaDePescaRepository
             .ObterParaValidarAsync(guiaDePescaCreateDTO.Cpf.LimparMascaraCpf(), guiaDePescaCreateDTO.Email.Trim());
 
@@ -59,7 +57,8 @@ internal class GuiaDePescaService : IGuiaDePescaService
                                 email: guiaDePescaCreateDTO.Email.Trim(),
                                 senha: PasswordAdapter.GenerateHash(guiaDePescaCreateDTO.Senha),
                                 urlFoto: urlFoto,
-                                id: id);
+                                id: id,
+                                aceitoDeTermos: guiaDePescaCreateDTO.AceitoDeTermos);
 
         await _guiaDePescaRepository.AddAsync(guia);
         await _guiaDePescaRepository.SaveChangesAsync();

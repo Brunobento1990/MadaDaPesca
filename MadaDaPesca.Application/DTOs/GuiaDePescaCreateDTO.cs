@@ -8,9 +8,5 @@ public class GuiaDePescaCreateDTO
     public string Senha { get; set; } = string.Empty;
     public string Telefone { get; set; } = string.Empty;
     public string? UrlFoto { get; set; }
-
-    public void Validar()
-    {
-
-    }
+    public bool AceitoDeTermos { get; set; }
 }

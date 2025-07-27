@@ -1,0 +1,29 @@
+name: Docker Image CI
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+    - name: Install dependencies
+      run: dotnet restore ./MapaDaPesca.Api
+    - name: Build
+      run: dotnet build ./MapaDaPesca.Api --configuration Release
+    - name: Build-Image-Docker
+      run: docker build -f MapaDaPesca.Api/Dockerfile . -t brunobentocaina/mapa-da-pesca:${GITHUB_REF#refs/*/}
+    - name: Push
+      run: |
+        docker login -u brunobentocaina -p ${{ secrets.DOCKER_HUB_KEY }}
+        docker push brunobentocaina/mapa-da-pesca:${GITHUB_REF#refs/*/}

@@ -12,16 +12,19 @@ public sealed class GuiaDePesca : BaseEntity
         DateTime dataDeAtualizacao,
         bool excluido,
         Guid pessoaId,
-        Guid acessoGuiaDePescaId)
+        Guid acessoGuiaDePescaId,
+        bool aceitoDeTermos)
             : base(id, dataDeCadastro, dataDeAtualizacao, excluido)
     {
         PessoaId = pessoaId;
         AcessoGuiaDePescaId = acessoGuiaDePescaId;
+        AceitoDeTermos = aceitoDeTermos;
     }
 
     public Guid PessoaId { get; private set; }
     public Pessoa Pessoa { get; set; } = null!;
     public Guid AcessoGuiaDePescaId { get; private set; }
+    public bool AceitoDeTermos { get; private set; }
     public AcessoGuiaDePesca AcessoGuiaDePesca { get; set; } = null!;
     public IList<Pescaria>? Pescarias { get; set; }
     public IList<Embarcacao>? Embarcacoes { get; set; }
@@ -33,7 +36,8 @@ public sealed class GuiaDePesca : BaseEntity
         string email,
         string senha,
         string? urlFoto,
-        Guid id)
+        Guid id,
+        bool aceitoDeTermos)
     {
         cpf.ValidarNull("Informe o CPF")
             .ValidarLength(11, "O CPF deve conter no máximo 11 caracteres");
@@ -72,7 +76,8 @@ public sealed class GuiaDePesca : BaseEntity
             dataDeAtualizacao: DateTime.UtcNow,
             excluido: false,
             pessoaId: pessoa.Id,
-            acessoGuiaDePescaId: acessoGuiaDePesca.Id)
+            acessoGuiaDePescaId: acessoGuiaDePesca.Id,
+            aceitoDeTermos: aceitoDeTermos)
         {
             AcessoGuiaDePesca = acessoGuiaDePesca,
             Pessoa = pessoa
@@ -94,6 +99,11 @@ public sealed class GuiaDePesca : BaseEntity
         if (!AcessoGuiaDePesca.EmailVerificado)
         {
             throw new ValidacaoException("Seu e-mail não foi verificado, verifique sua caixa de entrada ou spam", httpStatusCode: System.Net.HttpStatusCode.Unauthorized);
+        }
+
+        if (!AceitoDeTermos)
+        {
+            throw new ValidacaoException("Você deve aceitar os termos de uso para acessar a plataforma", httpStatusCode: System.Net.HttpStatusCode.Unauthorized);
         }
     }
 }
