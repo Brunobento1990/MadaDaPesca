@@ -52,6 +52,14 @@ internal class PescariaService : IPescariaService
             latitude: pescariaDTO.Latitude,
             longitude: pescariaDTO.Longitude);
 
+        if (pescariaDTO.DatasBloqueadas?.Count > 0)
+        {
+            foreach (var data in pescariaDTO.DatasBloqueadas)
+            {
+                pescaria.DatasBloqueadas.Add(new BloqueioDataPescaria(Guid.NewGuid(), data, pescaria.Id));
+            }
+        }
+
         await _pescariaRepository.AddAsync(pescaria);
         await _pescariaRepository.SaveChangesAsync();
 
@@ -88,6 +96,20 @@ internal class PescariaService : IPescariaService
             embarcacaoId: embarcacao?.Id,
             latitude: pescariaEditarDTO.Latitude,
             longitude: pescariaEditarDTO.Longitude);
+
+        if (pescaria.DatasBloqueadas.Count > 0)
+            _pescariaRepository.RemoverDatasBloqueadas(pescaria.DatasBloqueadas);
+
+        if (pescariaEditarDTO.DatasBloqueadas?.Count > 0)
+        {
+            var datasBloqueadas = new List<BloqueioDataPescaria>();
+            foreach (var data in pescariaEditarDTO.DatasBloqueadas)
+            {
+                datasBloqueadas.Add(new BloqueioDataPescaria(Guid.NewGuid(), data, pescaria.Id));
+            }
+
+            await _pescariaRepository.AddDatasBloqueadasAsync(datasBloqueadas);
+        }
 
         _pescariaRepository.Editar(pescaria);
         await _pescariaRepository.SaveChangesAsync();

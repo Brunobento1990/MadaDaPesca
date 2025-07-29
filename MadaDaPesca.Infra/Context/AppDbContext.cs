@@ -17,6 +17,7 @@ public class AppDbContext : DbContext
     public DbSet<AgendaPescaria> AgendaPescarias { get; set; }
     public DbSet<GaleriaAgendaPescaria> GaleriaAgendaPescaria { get; set; }
     public DbSet<Embarcacao> Embarcacoes { get; set; }
+    public DbSet<BloqueioDataPescaria> DatasBloqueadas { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -26,6 +26,7 @@ public class PescariaViewModel : BaseViewModel
     public GuiaDePescaViewModel GuiaDePesca { get; set; } = null!;
     public Guid? EmbarcacaoId { get; set; }
     public EmbarcacaoViewModel? Embarcacao { get; set; }
+    public IEnumerable<BloqueioDataPescariaViewModel>? DatasBloqueadas { get; set; }
 
     public static explicit operator PescariaViewModel(Pescaria pescaria)
     {
@@ -55,7 +56,8 @@ public class PescariaViewModel : BaseViewModel
             EmbarcacaoId = pescaria.EmbarcacaoId,
             Embarcacao = pescaria.Embarcacao == null ? null : (EmbarcacaoViewModel)pescaria.Embarcacao,
             Latitude = pescaria.Latitude,
-            Longitude = pescaria.Longitude
+            Longitude = pescaria.Longitude,
+            DatasBloqueadas = pescaria.DatasBloqueadas?.Select(x => (BloqueioDataPescariaViewModel)x)
         };
     }
 }

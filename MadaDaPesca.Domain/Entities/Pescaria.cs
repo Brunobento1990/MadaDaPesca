@@ -86,6 +86,7 @@ public sealed class Pescaria : BaseEntity
     public Guid? EmbarcacaoId { get; private set; }
     public Embarcacao Embarcacao { get; set; } = null!;
     public IList<AgendaPescaria> Agendamentos { get; set; } = [];
+    public IList<BloqueioDataPescaria> DatasBloqueadas { get; set; } = [];
 
     public void Excluir()
     {
@@ -276,6 +277,11 @@ public sealed class Pescaria : BaseEntity
                 case 6:
                     throw new ValidacaoException("Não é possível agendar pescaria aos sábados.");
             }
+        }
+
+        if (DatasBloqueadas.Any(x => x.Data.Date == dataDeAgendamento.Date))
+        {
+            throw new ValidacaoException("Não é possível agendar pescaria para uma data bloqueada.");
         }
     }
 }

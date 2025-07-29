@@ -20,6 +20,7 @@ public class PescariaDTO
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
     public Guid? EmbarcacaoId { get; set; }
+    public IList<DateTime>? DatasBloqueadas { get; set; }
 }
 
 public class PescariaEditarDTO : PescariaDTO
