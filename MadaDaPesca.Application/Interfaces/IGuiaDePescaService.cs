@@ -6,4 +6,6 @@ namespace MadaDaPesca.Application.Interfaces;
 public interface IGuiaDePescaService
 {
     Task<GuiaDePescaViewModel> CreateAsync(GuiaDePescaCreateDTO guiaDePescaCreateDTO);
+    Task<GuiaDePescaViewModel> MinhaContaAsync();
+    Task<GuiaDePescaViewModel> EditarMinhaContaAsync(GuiaDePescaEditarDTO guiaDePescaEditarDTO);
 }

@@ -18,7 +18,7 @@ internal class ConfirmarContaGuiaDePescaService : IConfirmarContaGuiaDePescaServ
         var guia = await _guiaDePescaRepository.ObterPorIdAsync(token)
             ?? throw new ValidacaoException("Não foi possível localizar seu cadastro");
 
-        guia.AcessoGuiaDePesca.VerificarEmail();
+        guia.AcessoGuiaDePesca.VerificarEmail(true);
 
         _guiaDePescaRepository.Editar(guia);
         await _guiaDePescaRepository.SaveChangesAsync();

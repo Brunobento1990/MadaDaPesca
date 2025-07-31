@@ -16,12 +16,14 @@ internal class GuiaDePescaService : IGuiaDePescaService
     private readonly IEmailService _emailService;
     private readonly IConfiguration _configuration;
     private readonly IUploadImagemService _uploadImagemService;
-    public GuiaDePescaService(IGuiaDePescaRepository guiaDePescaRepository, IEmailService emailService, IConfiguration configuration, IUploadImagemService uploadImagemService)
+    private readonly IGuiaDePescaLogado _guiaDePescaLogado;
+    public GuiaDePescaService(IGuiaDePescaRepository guiaDePescaRepository, IEmailService emailService, IConfiguration configuration, IUploadImagemService uploadImagemService, IGuiaDePescaLogado guiaDePescaLogado)
     {
         _guiaDePescaRepository = guiaDePescaRepository;
         _emailService = emailService;
         _configuration = configuration;
         _uploadImagemService = uploadImagemService;
+        _guiaDePescaLogado = guiaDePescaLogado;
     }
 
     public async Task<GuiaDePescaViewModel> CreateAsync(GuiaDePescaCreateDTO guiaDePescaCreateDTO)
@@ -44,11 +46,12 @@ internal class GuiaDePescaService : IGuiaDePescaService
         }
 
         string? urlFoto = guiaDePescaCreateDTO.UrlFoto;
-        var id = Guid.NewGuid();
+        Guid? idFoto = null;
 
         if (!string.IsNullOrEmpty(guiaDePescaCreateDTO.UrlFoto) && !guiaDePescaCreateDTO.UrlFoto.ToLower().StartsWith("http"))
         {
-            urlFoto = await _uploadImagemService.UploadAsync(guiaDePescaCreateDTO.UrlFoto, id);
+            idFoto = Guid.NewGuid();
+            urlFoto = await _uploadImagemService.UploadAsync(guiaDePescaCreateDTO.UrlFoto, idFoto.Value);
         }
 
         var guia = GuiaDePesca.Novo(cpf: guiaDePescaCreateDTO.Cpf.LimparMascaraCpf(),
@@ -57,8 +60,8 @@ internal class GuiaDePescaService : IGuiaDePescaService
                                 email: guiaDePescaCreateDTO.Email.Trim(),
                                 senha: PasswordAdapter.GenerateHash(guiaDePescaCreateDTO.Senha),
                                 urlFoto: urlFoto,
-                                id: id,
-                                aceitoDeTermos: guiaDePescaCreateDTO.AceitoDeTermos);
+                                aceitoDeTermos: guiaDePescaCreateDTO.AceitoDeTermos,
+                                idFoto: idFoto);
 
         await _guiaDePescaRepository.AddAsync(guia);
         await _guiaDePescaRepository.SaveChangesAsync();
@@ -79,6 +82,73 @@ internal class GuiaDePescaService : IGuiaDePescaService
         {
             throw new ValidacaoException("Não foi possível enviar seu e-mail de confirmação de conta, verifique se e-mail");
         }
+
+        return (GuiaDePescaViewModel)guia;
+    }
+
+    public async Task<GuiaDePescaViewModel> EditarMinhaContaAsync(GuiaDePescaEditarDTO guiaDePescaEditarDTO)
+    {
+        var guia = await _guiaDePescaRepository.ObterPorIdAsync(_guiaDePescaLogado.Id)
+           ?? throw new ValidacaoException("Guia de pesca não encontrado.");
+
+        if (guia.Pessoa.Email != guiaDePescaEditarDTO.Email.Trim())
+        {
+            var guiaExistente = await _guiaDePescaRepository
+                .ObterParaValidarAsync(guia.Pessoa.Cpf, guiaDePescaEditarDTO.Email.Trim(), guia.Id);
+            if (guiaExistente != null)
+            {
+                throw new ValidacaoException("Já existe um guia de pesca cadastrado com o e-mail informado.");
+            }
+
+            var htmlEnvio = await File.ReadAllTextAsync(Path.Combine("Htmls", "ConfirmarEmail.html"));
+
+            htmlEnvio = htmlEnvio.Replace("***usuario***", guia.Pessoa.Nome);
+            htmlEnvio = htmlEnvio.Replace("***link***", $"{_configuration["UrlFront"]}/confirmar-conta/{guia.Id}");
+
+            var resultadoEmail = await _emailService.EnviarAsync(new()
+            {
+                Email = guiaDePescaEditarDTO.Email,
+                Assunto = "Confirme seu e-mail",
+                Html = htmlEnvio
+            });
+
+            if (!resultadoEmail)
+            {
+                throw new ValidacaoException("Não foi possível enviar seu e-mail de confirmação de conta, verifique se e-mail");
+            }
+
+            guia.AcessoGuiaDePesca.VerificarEmail(false);
+        }
+
+        if (!string.IsNullOrWhiteSpace(guiaDePescaEditarDTO.UrlFoto)
+                && !guiaDePescaEditarDTO.UrlFoto.StartsWith("http"))
+        {
+            var idFoto = Guid.NewGuid();
+            guiaDePescaEditarDTO.UrlFoto = await _uploadImagemService.UploadAsync(guiaDePescaEditarDTO.UrlFoto, idFoto);
+
+            if (guia.Pessoa.IdFoto.HasValue)
+            {
+                await _uploadImagemService.DeleteAsync(guia.Pessoa.IdFoto.Value);
+            }
+
+            guia.Pessoa.EditarFoto(guiaDePescaEditarDTO.UrlFoto, idFoto);
+        }
+
+        guia.Editar(
+            nome: guiaDePescaEditarDTO.Nome.Trim(),
+            email: guiaDePescaEditarDTO.Email.Trim(),
+            telefone: guiaDePescaEditarDTO.Telefone.LimparMascaraTelefone());
+
+        _guiaDePescaRepository.Editar(guia);
+        await _guiaDePescaRepository.SaveChangesAsync();
+
+        return (GuiaDePescaViewModel)guia;
+    }
+
+    public async Task<GuiaDePescaViewModel> MinhaContaAsync()
+    {
+        var guia = await _guiaDePescaRepository.ObterPorIdAsync(_guiaDePescaLogado.Id)
+            ?? throw new ValidacaoException("Guia de pesca não encontrado.");
 
         return (GuiaDePescaViewModel)guia;
     }

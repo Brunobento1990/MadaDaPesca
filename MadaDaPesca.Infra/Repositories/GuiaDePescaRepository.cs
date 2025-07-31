@@ -29,13 +29,19 @@ internal class GuiaDePescaRepository : GenericRepository<GuiaDePesca>, IGuiaDePe
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<GuiaDePesca?> ObterParaValidarAsync(string cpf, string email)
+    public async Task<GuiaDePesca?> ObterParaValidarAsync(string cpf, string email, Guid? idDiferente = null)
     {
-        return await AppDbContext
-            .GuiasDePesca
+        var query = AppDbContext.GuiasDePesca
             .AsNoTracking()
             .Include(g => g.Pessoa)
-            .FirstOrDefaultAsync(x => x.Pessoa.Cpf == cpf || x.Pessoa.Email == email);
+            .Where(x => x.Pessoa.Cpf == cpf || x.Pessoa.Email == email);
+
+        if( idDiferente.HasValue)
+        {
+            query = query.Where(x => x.Id != idDiferente.Value);
+        }
+
+        return await query.FirstOrDefaultAsync();
     }
 
     public async Task<GuiaDePesca?> ObterPorCpfAsync(string cpf)

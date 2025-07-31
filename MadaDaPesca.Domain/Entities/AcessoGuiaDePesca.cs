@@ -46,8 +46,8 @@ public sealed class AcessoGuiaDePesca
         TrocouSenha = DateTime.UtcNow;
     }
 
-    public void VerificarEmail()
+    public void VerificarEmail(bool emailVerificado)
     {
-        EmailVerificado = true;
+        EmailVerificado = emailVerificado;
     }
 }

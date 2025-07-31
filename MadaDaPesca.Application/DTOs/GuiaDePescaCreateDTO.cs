@@ -10,3 +10,11 @@ public class GuiaDePescaCreateDTO
     public string? UrlFoto { get; set; }
     public bool AceitoDeTermos { get; set; }
 }
+
+public class GuiaDePescaEditarDTO
+{
+    public string Nome { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string Telefone { get; set; } = string.Empty;
+    public string? UrlFoto { get; set; }
+}

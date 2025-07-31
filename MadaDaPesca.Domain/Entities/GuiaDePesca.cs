@@ -36,21 +36,11 @@ public sealed class GuiaDePesca : BaseEntity
         string email,
         string senha,
         string? urlFoto,
-        Guid id,
-        bool aceitoDeTermos)
+        bool aceitoDeTermos,
+        Guid? idFoto)
     {
-        cpf.ValidarNull("Informe o CPF")
-            .ValidarLength(11, "O CPF deve conter no máximo 11 caracteres");
-        nome.ValidarNull("Informe o nome")
-            .ValidarLength(100, "O nome deve conter no máximo 100 caracteres");
-        telefone.ValidarNull("Informe o telefone")
-            .ValidarLength(11, "O telefone deve conter no máximo 11 caracteres");
-        email.ValidarNull("Informe o e-mail")
-            .ValidarLength(255, "O e-mail deve conter no máximo 255 caracteres");
-        senha.ValidarNull("Informe a senha");
-
         var acessoGuiaDePesca = new AcessoGuiaDePesca(
-            id: id,
+            id: Guid.NewGuid(),
             senha: senha,
             primeiroAcesso: true,
             emailVerificado: false,
@@ -68,7 +58,10 @@ public sealed class GuiaDePesca : BaseEntity
             nome: nome,
             telefone: telefone,
             email: email,
-            urlFoto: urlFoto);
+            urlFoto: urlFoto,
+            idFoto: idFoto);
+
+        pessoa.Validar();
 
         return new GuiaDePesca(
             id: Guid.NewGuid(),
@@ -82,6 +75,19 @@ public sealed class GuiaDePesca : BaseEntity
             AcessoGuiaDePesca = acessoGuiaDePesca,
             Pessoa = pessoa
         };
+    }
+
+    public void Editar(
+        string nome,
+        string email,
+        string telefone)
+    {
+        Pessoa.Editar(
+            nome: nome,
+            email: email,
+            telefone: telefone);
+
+        DataDeAtualizacao = DateTime.UtcNow;
     }
 
     public void ValidarAcesso()
