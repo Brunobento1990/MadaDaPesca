@@ -40,7 +40,7 @@ public class AgendaPescariaController : ControllerBase
 
     [HttpGet("agenda-do-mes")]
     [Autentica]
-    [ProducesResponseType<IEnumerable<AgendaPescariaViewModel>>(200)]
+    [ProducesResponseType<AgendaDoMesViewModel>(200)]
     [ProducesResponseType<ErrorViewModel>(400)]
     public async Task<IActionResult> AgendaDoMes([FromQuery] short mes, [FromQuery] short ano)
     {

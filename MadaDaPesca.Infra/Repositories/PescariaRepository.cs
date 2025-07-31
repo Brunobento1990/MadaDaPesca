@@ -42,6 +42,16 @@ internal class PescariaRepository : GenericRepository<Pescaria>, IPescariaReposi
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
+    public async Task<IList<BloqueioDataPescaria>> ObterTodasDatasBloqueadasAsync(int mes, int ano, Guid guiaDePescaId)
+    {
+        return await AppDbContext
+            .DatasBloqueadas
+            .Where(x => x.Pescaria.GuiaDePescaId == guiaDePescaId &&
+                        x.Data.Month == mes &&
+                        x.Data.Year == ano)
+            .ToListAsync();
+    }
+
     public void RemoverDatasBloqueadas(IList<BloqueioDataPescaria> datas)
     {
         AppDbContext.DatasBloqueadas.RemoveRange(datas);

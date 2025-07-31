@@ -22,12 +22,19 @@ internal class AgendaPescariaService : IAgendaPescariaService
         _uploadImagemService = uploadImagemService;
     }
 
-    public async Task<IEnumerable<AgendaPescariaViewModel>> AgendaDoMesAsync(short mes, short ano)
+    public async Task<AgendaDoMesViewModel> AgendaDoMesAsync(short mes, short ano)
     {
         var agendaDoMes = await _agendaPescariaRepository.ObterAgendaDaPescariaDoMesAsync(
             _guiaDePescaLogado.Id, mes, ano);
 
-        return agendaDoMes.Select(agenda => (AgendaPescariaViewModel)agenda);
+        var agenda = agendaDoMes.Select(agenda => (AgendaPescariaViewModel)agenda);
+        var todasDatasBloqueadas = await _pescariaRepository.ObterTodasDatasBloqueadasAsync(mes: mes, ano: ano, guiaDePescaId: _guiaDePescaLogado.Id);
+
+        return new()
+        {
+            Agenda = agenda,
+            AgendaBloqueada = todasDatasBloqueadas.Select(x => (BloqueioDataPescariaViewModel)x)
+        };
     }
 
     public async Task<AgendaPescariaViewModel> AgendarAsync(AgendarPescariaDTO agendarPescariaDTO)

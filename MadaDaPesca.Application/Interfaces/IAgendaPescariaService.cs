@@ -8,5 +8,5 @@ public interface IAgendaPescariaService
     Task<AgendaPescariaViewModel> ObterPorIdAsync(Guid id);
     Task<AgendaPescariaViewModel> AgendarAsync(AgendarPescariaDTO agendarPescariaDTO);
     Task<AgendaPescariaViewModel> EditarAsync(EditarAgendaPescariaDTO editarAgendaPescariaDTO);
-    Task<IEnumerable<AgendaPescariaViewModel>> AgendaDoMesAsync(short mes, short ano);
+    Task<AgendaDoMesViewModel> AgendaDoMesAsync(short mes, short ano);
 }
