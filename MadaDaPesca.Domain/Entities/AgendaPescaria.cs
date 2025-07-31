@@ -83,9 +83,6 @@ public sealed class AgendaPescaria : BaseEntity
     public void Editar(
         string? observacao,
         StatusAgendaPescariaEnum status,
-        short dia,
-        short mes,
-        short ano,
         short? horaInicial,
         short? horaFinal,
         short? quantidadeDePescador,
@@ -93,9 +90,6 @@ public sealed class AgendaPescaria : BaseEntity
     {
         Observacao = observacao;
         Status = status;
-        Dia = dia;
-        Mes = mes;
-        Ano = ano;
         HoraInicial = horaInicial;
         HoraFinal = horaFinal;
         DataDeAtualizacao = DateTime.UtcNow;

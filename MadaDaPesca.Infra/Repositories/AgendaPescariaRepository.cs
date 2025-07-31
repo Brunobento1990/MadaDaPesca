@@ -18,6 +18,13 @@ internal class AgendaPescariaRepository : GenericRepository<AgendaPescaria>, IAg
             .AddRangeAsync(galeriaAgendaPescarias);
     }
 
+    public void ExcluirGaleria(IList<GaleriaAgendaPescaria> galeriaAgendaPescarias)
+    {
+        AppDbContext
+            .GaleriaAgendaPescaria
+            .RemoveRange(galeriaAgendaPescarias);
+    }
+
     public async Task<IList<AgendaPescaria>> ObterAgendaDaPescariaDoDiaAsync(Guid pescariaId, short dia, short mes, short ano)
     {
         return await AppDbContext

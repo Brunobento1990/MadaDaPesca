@@ -24,7 +24,7 @@ public class PescariaDTO
     public Guid? EmbarcacaoId { get; set; }
     public IList<DateTime>? DatasBloqueadas { get; set; }
     [JsonIgnore]
-    public IEnumerable<DateTime> DatasBloqueadasValidas => DatasBloqueadas?.Where(x => x.Month == DateTime.Now.Month) ?? [];
+    public IEnumerable<DateTime> DatasBloqueadasValidas => DatasBloqueadas ?? [];
 }
 
 public class PescariaEditarDTO : PescariaDTO

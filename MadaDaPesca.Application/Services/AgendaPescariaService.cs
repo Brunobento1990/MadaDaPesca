@@ -78,20 +78,6 @@ internal class AgendaPescariaService : IAgendaPescariaService
             horaFinal: agendarPescariaDTO.HoraFinal ?? pescaria.HoraFinal,
             quantidadeDePescador: agendarPescariaDTO.QuantidadeDePescador ?? pescaria.QuantidadePescador);
 
-        if (agendarPescariaDTO.Galeria != null && agendarPescariaDTO.Galeria.Any())
-        {
-            foreach (var foto in agendarPescariaDTO.Galeria)
-            {
-                var id = Guid.NewGuid();
-                var url = await _uploadImagemService.UploadAsync(foto.Url, id);
-
-                agendamento.Galeria.Add(new GaleriaAgendaPescaria(
-                    id: id,
-                    url: url,
-                    agendaPescariaId: agendamento.Id));
-            }
-        }
-
         await _agendaPescariaRepository.AddAsync(agendamento);
         await _agendaPescariaRepository.SaveChangesAsync();
 
@@ -105,24 +91,21 @@ internal class AgendaPescariaService : IAgendaPescariaService
     {
         var pescaria = await _pescariaRepository.ObterPorIdAsync(editarAgendaPescariaDTO.PescariaId)
             ?? throw new ValidacaoException("Não foi possível localizar a pescaria selecionada");
-        var agenda = await _agendaPescariaRepository.ObterPorIdAsync(editarAgendaPescariaDTO.AgendaPescariaId)
+        var agenda = await _agendaPescariaRepository.ObterPorIdAsync(editarAgendaPescariaDTO.Id)
             ?? throw new ValidacaoException("Não foi possível localizar o agendamento selecionado");
 
         agenda.Editar(editarAgendaPescariaDTO.Observacao,
             editarAgendaPescariaDTO.Status ?? agenda.Status,
-            (short)editarAgendaPescariaDTO.DataDeAgendamento.Day,
-            (short)editarAgendaPescariaDTO.DataDeAgendamento.Month,
-            (short)editarAgendaPescariaDTO.DataDeAgendamento.Year,
             editarAgendaPescariaDTO.HoraInicial,
             editarAgendaPescariaDTO.HoraFinal,
             editarAgendaPescariaDTO.QuantidadeDePescador,
             pescariaId: pescaria.Id);
 
-        if (editarAgendaPescariaDTO.Galeria != null && editarAgendaPescariaDTO.Galeria.Any())
+        if (editarAgendaPescariaDTO.FotosAdicionas.Any())
         {
             var galeria = new List<GaleriaAgendaPescaria>();
 
-            foreach (var foto in editarAgendaPescariaDTO.Galeria)
+            foreach (var foto in editarAgendaPescariaDTO.FotosAdicionas)
             {
                 var id = Guid.NewGuid();
                 var url = await _uploadImagemService.UploadAsync(foto.Url, id);
@@ -133,6 +116,23 @@ internal class AgendaPescariaService : IAgendaPescariaService
             }
 
             await _agendaPescariaRepository.AddGaleriaAsync(galeria);
+        }
+
+        if (editarAgendaPescariaDTO.FotosExcluidas?.Any() ?? false)
+        {
+            var fotosExcluidas = agenda.Galeria
+                .Where(x => editarAgendaPescariaDTO.FotosExcluidas.Contains(x.Id))
+                .ToList();
+
+            if (fotosExcluidas.Count > 0)
+            {
+                foreach (var item in fotosExcluidas)
+                {
+                    await _uploadImagemService.DeleteAsync(item.Id);
+                }
+
+                _agendaPescariaRepository.ExcluirGaleria(fotosExcluidas);
+            }
         }
 
         _agendaPescariaRepository.Editar(agenda);

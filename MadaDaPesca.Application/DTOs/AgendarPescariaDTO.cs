@@ -1,4 +1,5 @@
 ﻿using MadaDaPesca.Domain.Enum;
+using System.Text.Json.Serialization;
 
 namespace MadaDaPesca.Application.DTOs;
 
@@ -11,15 +12,19 @@ public class AgendarPescariaDTO
     public virtual StatusAgendaPescariaEnum? Status { get; set; }
     public short? HoraInicial { get; set; }
     public short? HoraFinal { get; set; }
-    public IList<GaleriaAgendaPescariaDTO>? Galeria { get; set; }
 }
 
 public class GaleriaAgendaPescariaDTO
 {
+    public Guid? Id { get; set; }
     public string Url { get; set; } = string.Empty;
 }
 
 public class EditarAgendaPescariaDTO : AgendarPescariaDTO
 {
-    public Guid AgendaPescariaId { get; set; }
+    public Guid Id { get; set; }
+    public IList<GaleriaAgendaPescariaDTO>? Galeria { get; set; }
+    public IList<Guid>? FotosExcluidas { get; set; }
+    [JsonIgnore]
+    public IEnumerable<GaleriaAgendaPescariaDTO> FotosAdicionas => Galeria?.Where(x => !x.Id.HasValue && !x.Url.StartsWith("http")) ?? [];
 }
