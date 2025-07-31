@@ -12,11 +12,13 @@ internal class EmbarcacaoService : IEmbarcacaoService
 {
     private readonly IEmbarcacaoRepository _embarcacaoRepository;
     private readonly IGuiaDePescaLogado _guiaDePescaLogado;
+    private readonly IUploadImagemService _uploadImagemService;
 
-    public EmbarcacaoService(IEmbarcacaoRepository embarcacaoRepository, IGuiaDePescaLogado guiaDePescaLogado)
+    public EmbarcacaoService(IEmbarcacaoRepository embarcacaoRepository, IGuiaDePescaLogado guiaDePescaLogado, IUploadImagemService uploadImagemService)
     {
         _embarcacaoRepository = embarcacaoRepository;
         _guiaDePescaLogado = guiaDePescaLogado;
+        _uploadImagemService = uploadImagemService;
     }
 
     public async Task<EmbarcacaoViewModel> CriarAsync(EmbarcacaoCreateDTO embarcacaoCreateDTO)
@@ -29,6 +31,21 @@ internal class EmbarcacaoService : IEmbarcacaoService
             comprimento: embarcacaoCreateDTO.Comprimento,
             quantidadeDeLugar: embarcacaoCreateDTO.QuantidadeDeLugar,
             guiaDePescaId: _guiaDePescaLogado.Id);
+
+        embarcacao.Galeria ??= [];
+
+        foreach (var foto in embarcacaoCreateDTO.GaleriaValida)
+        {
+            var id = Guid.NewGuid();
+            var url = foto.Url;
+
+            if (!url.StartsWith("http"))
+            {
+                url = await _uploadImagemService.UploadAsync(foto.Url, id);
+            }
+
+            embarcacao.Galeria.Add(new GaleriaFotoEmbarcacao(id, url, embarcacao.Id));
+        }
 
         await _embarcacaoRepository.AddAsync(embarcacao);
         await _embarcacaoRepository.SaveChangesAsync();
@@ -47,6 +64,38 @@ internal class EmbarcacaoService : IEmbarcacaoService
             largura: embarcacaoEditarDTO.Largura,
             comprimento: embarcacaoEditarDTO.Comprimento,
             quantidadeDeLugar: embarcacaoEditarDTO.QuantidadeDeLugar);
+
+        if (embarcacaoEditarDTO.GaleriaValida.Any())
+        {
+            var novasFotos = new List<GaleriaFotoEmbarcacao>();
+            foreach (var item in embarcacaoEditarDTO.GaleriaValida)
+            {
+                var id = Guid.NewGuid();
+                var url = item.Url;
+                if (!url.StartsWith("http"))
+                {
+                    url = await _uploadImagemService.UploadAsync(item.Url, id);
+                }
+                novasFotos.Add(new GaleriaFotoEmbarcacao(id, url, embarcacao.Id));
+            }
+            await _embarcacaoRepository.AddGaleriaAsync(novasFotos);
+        }
+
+        if (embarcacaoEditarDTO.FotosExcluidas?.Count() > 0)
+        {
+            var fotosExcluidas = embarcacao.Galeria?
+                .Where(g => embarcacaoEditarDTO.FotosExcluidas.Contains(g.Id))
+                .ToList() ?? [];
+
+            if (fotosExcluidas.Count > 0)
+            {
+                foreach (var item in fotosExcluidas)
+                {
+                    await _uploadImagemService.DeleteAsync(item.Id);
+                }
+                _embarcacaoRepository.RemoverGaleria(fotosExcluidas);
+            }
+        }
 
         _embarcacaoRepository.Editar(embarcacao);
         await _embarcacaoRepository.SaveChangesAsync();

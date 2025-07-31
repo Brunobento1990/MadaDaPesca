@@ -10,6 +10,7 @@ public class EmbarcacaoViewModel : BaseViewModel
     public short? QuantidadeDeLugar { get; set; }
     public Guid GuiaDePescaId { get; set; }
     public GuiaDePescaViewModel GuiaDePesca { get; set; } = null!;
+    public IEnumerable<GaleriaFotoEmbarcacaoViewModel>? Galeria { get; set; } = [];
 
     public static explicit operator EmbarcacaoViewModel(Domain.Entities.Embarcacao embarcacao)
     {
@@ -25,7 +26,8 @@ public class EmbarcacaoViewModel : BaseViewModel
             Comprimento = embarcacao.Comprimento,
             QuantidadeDeLugar = embarcacao.QuantidadeDeLugar,
             GuiaDePescaId = embarcacao.GuiaDePescaId,
-            GuiaDePesca = embarcacao.GuiaDePesca == null ? null! : (GuiaDePescaViewModel)embarcacao.GuiaDePesca
+            GuiaDePesca = embarcacao.GuiaDePesca == null ? null! : (GuiaDePescaViewModel)embarcacao.GuiaDePesca,
+            Galeria = embarcacao.Galeria?.Select(g => (GaleriaFotoEmbarcacaoViewModel)g)
         };
     }
 }

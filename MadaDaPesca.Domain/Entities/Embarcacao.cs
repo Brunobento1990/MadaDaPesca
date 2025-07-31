@@ -38,6 +38,7 @@ public sealed class Embarcacao : BaseEntity
     public Guid GuiaDePescaId { get; private set; }
     public GuiaDePesca GuiaDePesca { get; set; } = null!;
     public IList<Pescaria>? Pescarias { get; set; }
+    public IList<GaleriaFotoEmbarcacao>? Galeria { get; set; }
 
     public void Editar(
         string nome,

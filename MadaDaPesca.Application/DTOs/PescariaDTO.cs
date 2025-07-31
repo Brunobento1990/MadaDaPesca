@@ -1,4 +1,6 @@
-﻿namespace MadaDaPesca.Application.DTOs;
+﻿using System.Text.Json.Serialization;
+
+namespace MadaDaPesca.Application.DTOs;
 
 public class PescariaDTO
 {
@@ -21,6 +23,8 @@ public class PescariaDTO
     public double? Longitude { get; set; }
     public Guid? EmbarcacaoId { get; set; }
     public IList<DateTime>? DatasBloqueadas { get; set; }
+    [JsonIgnore]
+    public IEnumerable<DateTime> DatasBloqueadasValidas => DatasBloqueadas?.Where(x => x.Month == DateTime.Now.Month) ?? [];
 }
 
 public class PescariaEditarDTO : PescariaDTO
