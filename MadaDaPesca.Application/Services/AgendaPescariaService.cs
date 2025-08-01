@@ -21,7 +21,6 @@ internal class AgendaPescariaService : IAgendaPescariaService
         _pescariaRepository = pescariaRepository;
         _uploadImagemService = uploadImagemService;
     }
-
     public async Task<AgendaDoMesViewModel> AgendaDoMesAsync(short mes, short ano)
     {
         var agendaDoMes = await _agendaPescariaRepository.ObterAgendaDaPescariaDoMesAsync(
@@ -32,11 +31,10 @@ internal class AgendaPescariaService : IAgendaPescariaService
 
         return new()
         {
-            Agenda = agenda,
-            AgendaBloqueada = todasDatasBloqueadas.Select(x => (BloqueioDataPescariaViewModel)x)
+            Agenda = agenda.OrderBy(x => x.DataDeAgendamento),
+            AgendaBloqueada = todasDatasBloqueadas.OrderBy(x => x.Data).Select(x => (BloqueioDataPescariaViewModel)x)
         };
     }
-
     public async Task<AgendaPescariaViewModel> AgendarAsync(AgendarPescariaDTO agendarPescariaDTO)
     {
         var pescaria = await _pescariaRepository.ObterPorIdAsync(agendarPescariaDTO.PescariaId)
@@ -86,7 +84,6 @@ internal class AgendaPescariaService : IAgendaPescariaService
 
         return agendaViewModel;
     }
-
     public async Task<AgendaPescariaViewModel> EditarAsync(EditarAgendaPescariaDTO editarAgendaPescariaDTO)
     {
         var pescaria = await _pescariaRepository.ObterPorIdAsync(editarAgendaPescariaDTO.PescariaId)
@@ -140,11 +137,44 @@ internal class AgendaPescariaService : IAgendaPescariaService
 
         return (AgendaPescariaViewModel)agenda;
     }
-
     public async Task<AgendaPescariaViewModel> ObterPorIdAsync(Guid id)
     {
         var agenda = await _agendaPescariaRepository.ObterPorIdAsync(id)
             ?? throw new ValidacaoException("Não foi possível localizar o agendamento selecionado");
+
+        return (AgendaPescariaViewModel)agenda;
+    }
+    public async Task<AgendaPescariaViewModel> ReagendarAsync(ReagendarDTO reagendarDTO)
+    {
+        var agenda = await _agendaPescariaRepository.ObterPorIdAsync(reagendarDTO.Id)
+            ?? throw new ValidacaoException("Não foi possível localizar a data de agendamento");
+
+        if (agenda.Dia == reagendarDTO.DataDeAgendamento.Day &&
+            agenda.Mes == reagendarDTO.DataDeAgendamento.Month &&
+            agenda.Ano == reagendarDTO.DataDeAgendamento.Year)
+        {
+            throw new ValidacaoException("A data de reagendar é a mesma da data autal, informe outra data");
+        }
+
+        agenda.Reagendar(reagendarDTO.DataDeAgendamento);
+
+        if (agenda.Pescaria.QuantidadeMaximaDeAgendamentosNoDia.HasValue)
+        {
+            var agendamentos = await _agendaPescariaRepository
+                .ObterAgendaDaPescariaDoDiaAsync(
+                    agenda.PescariaId,
+                    (short)reagendarDTO.DataDeAgendamento.Day,
+                    (short)reagendarDTO.DataDeAgendamento.Month,
+                    (short)reagendarDTO.DataDeAgendamento.Year);
+
+            if (agendamentos.Where(x => x.Status != Domain.Enum.StatusAgendaPescariaEnum.Cancelada && x.Id != agenda.Id).Count() >= agenda.Pescaria.QuantidadeMaximaDeAgendamentosNoDia)
+            {
+                throw new ValidacaoException("Quantidade máxima de agendamentos para o dia atingida.");
+            }
+        }
+
+        _agendaPescariaRepository.Editar(agenda);
+        await _agendaPescariaRepository.SaveChangesAsync();
 
         return (AgendaPescariaViewModel)agenda;
     }

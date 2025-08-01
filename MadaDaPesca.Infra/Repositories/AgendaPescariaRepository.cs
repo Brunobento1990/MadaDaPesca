@@ -57,6 +57,7 @@ internal class AgendaPescariaRepository : GenericRepository<AgendaPescaria>, IAg
         return await AppDbContext
             .AgendaPescarias
             .Include(x => x.Pescaria)
+                .ThenInclude(x => x.DatasBloqueadas)
             .Include(x => x.Galeria)
             .FirstOrDefaultAsync(a => a.Id == id && !a.Excluido);
     }

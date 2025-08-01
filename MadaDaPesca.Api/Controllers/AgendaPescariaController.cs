@@ -38,6 +38,16 @@ public class AgendaPescariaController : ControllerBase
         return Ok(response);
     }
 
+    [HttpPut("reagendar")]
+    [Autentica]
+    [ProducesResponseType<AgendaPescariaViewModel>(200)]
+    [ProducesResponseType<ErrorViewModel>(400)]
+    public async Task<IActionResult> Reagendar(ReagendarDTO reagendarDTO)
+    {
+        var response = await _agendaPescariaService.ReagendarAsync(reagendarDTO);
+        return Ok(response);
+    }
+
     [HttpGet("agenda-do-mes")]
     [Autentica]
     [ProducesResponseType<AgendaDoMesViewModel>(200)]

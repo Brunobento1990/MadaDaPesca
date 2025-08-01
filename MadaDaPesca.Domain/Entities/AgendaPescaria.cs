@@ -96,4 +96,15 @@ public sealed class AgendaPescaria : BaseEntity
         QuantidadeDePescador = quantidadeDePescador;
         PescariaId = pescariaId;
     }
+
+    public void Reagendar(DateTime dataDeAgendamento)
+    {
+        Pescaria.EstaDisponivelParaAgendamento(dataDeAgendamento);
+
+        Dia = (short)dataDeAgendamento.Day;
+        Mes = (short)dataDeAgendamento.Month;
+        Ano = (short)dataDeAgendamento.Year;
+
+        DataDeAtualizacao = DateTime.UtcNow;
+    }
 }

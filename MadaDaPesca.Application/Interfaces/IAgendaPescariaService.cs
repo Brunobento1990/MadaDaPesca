@@ -9,4 +9,5 @@ public interface IAgendaPescariaService
     Task<AgendaPescariaViewModel> AgendarAsync(AgendarPescariaDTO agendarPescariaDTO);
     Task<AgendaPescariaViewModel> EditarAsync(EditarAgendaPescariaDTO editarAgendaPescariaDTO);
     Task<AgendaDoMesViewModel> AgendaDoMesAsync(short mes, short ano);
+    Task<AgendaPescariaViewModel> ReagendarAsync(ReagendarDTO reagendarDTO);
 }
