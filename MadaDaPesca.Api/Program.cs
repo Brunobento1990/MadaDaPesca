@@ -11,14 +11,20 @@ builder.Services.ConfigureControllers()
     .AddSwaggerConfiguration()
     .AddOpenApi();
 
+var configurarHangFire = builder.Configuration["HangFire"]?.ToUpper() == "TRUE";
+
 builder.Services
-    .InjectServices()
+    .InjectServices(configurarHangFire)
     .InjectRepositories()
     .InjectHttpClient(builder.Configuration)
     .InjectJwt(builder.Configuration["Jwt:Key"]!, builder.Configuration["Jwt:Issue"]!, builder.Configuration["Jwt:Audience"]!)
     .InjectDbContext(builder.Configuration["ConnectionStrings:Conexao"]!)
-    .AddCorsConfiguration(builder.Configuration["Origins"]!.Split("|"))
-    .ConfigurarHangFire(builder.Configuration["ConnectionStrings:Hangfire"]!);
+    .AddCorsConfiguration(builder.Configuration["Origins"]!.Split("|"));
+
+if (configurarHangFire)
+{
+    builder.Services.ConfigurarHangFire(builder.Configuration["ConnectionStrings:Hangfire"]!);
+}
 
 LogService.ConfigureLog(builder.Configuration["Seq:Url"]!);
 builder.Host.UseSerilog();
@@ -51,6 +57,9 @@ if (migrationServico != null)
     await migrationServico.RodarMigrationAsync();
 }
 
-app.ConfigurarDashBoardHangFire();
+if (configurarHangFire)
+{
+    app.ConfigurarDashBoardHangFire();
+}
 
 app.Run();

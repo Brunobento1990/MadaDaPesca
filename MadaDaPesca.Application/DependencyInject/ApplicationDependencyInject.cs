@@ -14,9 +14,12 @@ namespace MadaDaPesca.Application.DependencyInject;
 
 public static class ApplicationDependencyInject
 {
-    public static IServiceCollection InjectServices(this IServiceCollection services)
+    public static IServiceCollection InjectServices(this IServiceCollection services, bool configurarHangFire)
     {
-        services.AddHangfireServer();
+        if (configurarHangFire)
+        {
+            services.AddHangfireServer();
+        }
 
         services.AddScoped<IGuiaDePescaService, GuiaDePescaService>();
         services.AddScoped<ILoginGuiaDePescaService, LoginGuiaDePescaService>();
