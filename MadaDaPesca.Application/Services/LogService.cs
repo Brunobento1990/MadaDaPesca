@@ -8,7 +8,7 @@ public static class LogService
     public static void ConfigureLog(string url)
     {
         Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
+            .MinimumLevel.Warning()
             .Enrich.FromLogContext()
             .WriteTo.Console()
             .WriteTo.Seq(url)
