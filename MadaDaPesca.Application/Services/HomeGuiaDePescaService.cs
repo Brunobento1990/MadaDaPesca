@@ -39,7 +39,14 @@ internal class HomeGuiaDePescaService : IHomeGuiaDePescaService
             mes: (short)DateTime.Now.Month,
             ano: (short)DateTime.Now.Year);
 
+        var agendaDeAmanha = await _agendaPescariaRepository.ObterAgendaDoDiaAsync(
+            _guiaDePescaLogado.Id,
+            dia: (short)(DateTime.Now.Day + 1),
+            mes: (short)DateTime.Now.Month,
+            ano: (short)DateTime.Now.Year);
+
         homeViewModel.AgendaDeHoje = agendaDeHoje.Select(x => (AgendaPescariaViewModel)x);
+        homeViewModel.AgendaDeAmanha = agendaDeAmanha.Select(x => (AgendaPescariaViewModel)x);
 
         return homeViewModel;
     }

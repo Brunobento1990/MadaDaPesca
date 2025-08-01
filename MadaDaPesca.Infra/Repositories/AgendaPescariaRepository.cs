@@ -52,6 +52,11 @@ internal class AgendaPescariaRepository : GenericRepository<AgendaPescaria>, IAg
             .ToListAsync();
     }
 
+    public Task<IList<AgendaPescaria>> ObterAgendaParaNotificarAsync()
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<AgendaPescaria?> ObterPorIdAsync(Guid id)
     {
         return await AppDbContext

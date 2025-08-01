@@ -1,6 +1,7 @@
 using MadaDaPesca.Api.Configurations;
 using MadaDaPesca.Application.DependencyInject;
 using MadaDaPesca.Application.Services;
+using MadaDaPesca.Domain.Interfaces;
 using MadaDaPesca.Infra.DependencyInject;
 using Serilog;
 
@@ -16,7 +17,8 @@ builder.Services
     .InjectHttpClient(builder.Configuration)
     .InjectJwt(builder.Configuration["Jwt:Key"]!, builder.Configuration["Jwt:Issue"]!, builder.Configuration["Jwt:Audience"]!)
     .InjectDbContext(builder.Configuration["ConnectionStrings:Conexao"]!)
-    .AddCorsConfiguration(builder.Configuration["Origins"]!.Split("|"));
+    .AddCorsConfiguration(builder.Configuration["Origins"]!.Split("|"))
+    .ConfigurarHangFire(builder.Configuration["ConnectionStrings:Hangfire"]!);
 
 LogService.ConfigureLog(builder.Configuration["Seq:Url"]!);
 builder.Host.UseSerilog();
@@ -41,5 +43,14 @@ app.UseAuthorization();
 app.UseCors("base");
 
 app.MapControllers();
+
+using var scope = app.Services.CreateScope();
+var migrationServico = scope.ServiceProvider.GetService<IMigrationRepository>();
+if (migrationServico != null)
+{
+    await migrationServico.RodarMigrationAsync();
+}
+
+app.ConfigurarDashBoardHangFire();
 
 app.Run();
