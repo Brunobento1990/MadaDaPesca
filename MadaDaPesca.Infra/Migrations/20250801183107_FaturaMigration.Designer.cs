@@ -3,6 +3,7 @@ using System;
 using MadaDaPesca.Infra.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MadaDaPesca.Infra.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250801183107_FaturaMigration")]
+    partial class FaturaMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,7 +38,7 @@ namespace MadaDaPesca.Infra.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<DateTime?>("ExpiracaoTokenEsqueceuSenha")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("PrimeiroAcesso")
                         .HasColumnType("boolean");
@@ -49,7 +52,7 @@ namespace MadaDaPesca.Infra.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("TrocouSenha")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -67,12 +70,12 @@ namespace MadaDaPesca.Infra.Migrations
 
                     b.Property<DateTime>("DataDeAtualizacao")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("now()");
 
                     b.Property<DateTime>("DataDeCadastro")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("now()");
 
                     b.Property<short>("Dia")
@@ -129,7 +132,7 @@ namespace MadaDaPesca.Infra.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("Data")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("PescariaId")
                         .HasColumnType("uuid");
@@ -153,12 +156,12 @@ namespace MadaDaPesca.Infra.Migrations
 
                     b.Property<DateTime>("DataDeAtualizacao")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("now()");
 
                     b.Property<DateTime>("DataDeCadastro")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("now()");
 
                     b.Property<bool>("Excluido")
@@ -209,16 +212,16 @@ namespace MadaDaPesca.Infra.Migrations
 
                     b.Property<DateTime>("DataDeAtualizacao")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("now()");
 
                     b.Property<DateTime>("DataDeCadastro")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("now()");
 
                     b.Property<DateTime>("DataDeVencimento")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Descricao")
                         .HasMaxLength(255)
@@ -302,12 +305,12 @@ namespace MadaDaPesca.Infra.Migrations
 
                     b.Property<DateTime>("DataDeAtualizacao")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("now()");
 
                     b.Property<DateTime>("DataDeCadastro")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("now()");
 
                     b.Property<bool>("Excluido")
@@ -358,12 +361,12 @@ namespace MadaDaPesca.Infra.Migrations
 
                     b.Property<DateTime>("DataDeAtualizacao")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("now()");
 
                     b.Property<DateTime>("DataDeCadastro")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("now()");
 
                     b.Property<string>("Descricao")
@@ -435,12 +438,12 @@ namespace MadaDaPesca.Infra.Migrations
 
                     b.Property<DateTime>("DataDeAtualizacao")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("now()");
 
                     b.Property<DateTime>("DataDeCadastro")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("now()");
 
                     b.Property<string>("Email")
@@ -489,12 +492,12 @@ namespace MadaDaPesca.Infra.Migrations
 
                     b.Property<DateTime>("DataDeAtualizacao")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("now()");
 
                     b.Property<DateTime>("DataDeCadastro")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp without time zone")
+                        .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("now()");
 
                     b.Property<string>("Descricao")

@@ -19,9 +19,13 @@ public class AppDbContext : DbContext
     public DbSet<GaleriaFotoEmbarcacao> GaleriaFotoEmbarcacoes { get; set; }
     public DbSet<Embarcacao> Embarcacoes { get; set; }
     public DbSet<BloqueioDataPescaria> DatasBloqueadas { get; set; }
+    public DbSet<FaturaAgendaPescaria> FaturasAgendaPescarias { get; set; }
+    public DbSet<TransacaoFaturaAgendaPescaria> TransacoesFaturaAgenda { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.ApplyConfiguration(new FaturaAgendaPescariaConfiguration());
+        modelBuilder.ApplyConfiguration(new TransacaoFaturaAgendaPescariaConfiguration());
         modelBuilder.ApplyConfiguration(new GaleriaFotoEmbarcacaoConfiguration());
         modelBuilder.ApplyConfiguration(new EmbarcacaoConfiguration());
         modelBuilder.ApplyConfiguration(new GaleriaAgendaPescariaConfiguration());

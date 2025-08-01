@@ -6,4 +6,5 @@ public class HomeViewModel
     public ClimaViewModel Clima { get; set; } = null!;
     public IEnumerable<AgendaPescariaViewModel> AgendaDeHoje { get; set; } = [];
     public IEnumerable<AgendaPescariaViewModel> AgendaDeAmanha { get; set; } = [];
+    public FaturaHomeViewModel? Fatura { get; set; }
 }

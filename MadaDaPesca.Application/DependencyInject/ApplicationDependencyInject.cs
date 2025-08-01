@@ -32,6 +32,7 @@ public static class ApplicationDependencyInject
         services.AddScoped<IRecuperarSenhaGuiaDePescaService, RecuperarSenhaGuiaDePescaService>();
         services.AddScoped<IEmbarcacaoService, EmbarcacaoService>();
         services.AddScoped<INotificacaoAgendamentoService, NotificacaoAgendamentoService>();
+        services.AddScoped<IFaturaAgendaPescariaService, FaturaAgendaPescariaService>();
 
         return services;
     }

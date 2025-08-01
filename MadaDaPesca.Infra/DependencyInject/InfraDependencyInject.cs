@@ -24,11 +24,13 @@ public static class InfraDependencyInject
         services.AddScoped<IUploadImagemService, UploadImagemService>();
         services.AddScoped<IEmbarcacaoRepository, EmbarcacaoRepository>();
         services.AddScoped<IMigrationRepository, MigrationRepository>();
+        services.AddScoped<IFaturaAgendaPescariaRepository, FaturaAgendaPescariaRepository>();
         return services;
     }
 
     public static IServiceCollection InjectDbContext(this IServiceCollection services, string connectionString)
     {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         services.AddDbContext<AppDbContext>(opt => opt.UseNpgsql(connectionString));
         return services;
     }

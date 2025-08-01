@@ -13,14 +13,16 @@ internal class HomeGuiaDePescaService : IHomeGuiaDePescaService
     private readonly IAgendaPescariaRepository _agendaPescariaRepository;
     private readonly IGuiaDePescaLogado _guiaDePescaLogado;
     private readonly IConfiguration _configuration;
+    private readonly IFaturaAgendaPescariaRepository _faturaAgendaPescariaRepository;
 
-    public HomeGuiaDePescaService(IMarService marService, IClimaService climaService, IAgendaPescariaRepository agendaPescariaRepository, IGuiaDePescaLogado guiaDePescaLogado, IConfiguration configuration)
+    public HomeGuiaDePescaService(IMarService marService, IClimaService climaService, IAgendaPescariaRepository agendaPescariaRepository, IGuiaDePescaLogado guiaDePescaLogado, IConfiguration configuration, IFaturaAgendaPescariaRepository faturaAgendaPescariaRepository)
     {
         _marService = marService;
         _climaService = climaService;
         _agendaPescariaRepository = agendaPescariaRepository;
         _guiaDePescaLogado = guiaDePescaLogado;
         _configuration = configuration;
+        _faturaAgendaPescariaRepository = faturaAgendaPescariaRepository;
     }
 
     public async Task<HomeViewModel> ObterAsync(HomeDTO homeDTO)
@@ -47,6 +49,20 @@ internal class HomeGuiaDePescaService : IHomeGuiaDePescaService
 
         homeViewModel.AgendaDeHoje = agendaDeHoje.Select(x => (AgendaPescariaViewModel)x);
         homeViewModel.AgendaDeAmanha = agendaDeAmanha.Select(x => (AgendaPescariaViewModel)x);
+
+        var faturas = await _faturaAgendaPescariaRepository.FaturasHomeGuiaDePescaAsync(_guiaDePescaLogado.Id);
+
+        if (faturas.Count > 0)
+        {
+            homeViewModel.Fatura = new FaturaHomeViewModel
+            {
+                Ano = faturas.First().DataDeVencimento.Year,
+                Mes = faturas.First().DataDeVencimento.Month,
+                ValorTotal = faturas.Sum(x => x.Valor),
+                ValorAReceber = faturas.Sum(x => x.ValorAReceber),
+                ValorRecebido = faturas.Sum(x => x.ValorRecebido),
+            };
+        }
 
         return homeViewModel;
     }

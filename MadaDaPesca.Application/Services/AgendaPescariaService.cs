@@ -74,7 +74,9 @@ internal class AgendaPescariaService : IAgendaPescariaService
             ano: (short)agendarPescariaDTO.DataDeAgendamento.Year,
             horaInicial: agendarPescariaDTO.HoraInicial ?? pescaria.HoraInicial,
             horaFinal: agendarPescariaDTO.HoraFinal ?? pescaria.HoraFinal,
-            quantidadeDePescador: agendarPescariaDTO.QuantidadeDePescador ?? pescaria.QuantidadePescador);
+            quantidadeDePescador: agendarPescariaDTO.QuantidadeDePescador ?? pescaria.QuantidadePescador,
+            valor: pescaria.Valor,
+            guiaDePescaId: _guiaDePescaLogado.Id);
 
         await _agendaPescariaRepository.AddAsync(agendamento);
         await _agendaPescariaRepository.SaveChangesAsync();

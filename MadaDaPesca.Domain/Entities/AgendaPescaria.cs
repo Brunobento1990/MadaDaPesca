@@ -43,6 +43,7 @@ public sealed class AgendaPescaria : BaseEntity
     public Guid PescariaId { get; private set; }
     public Pescaria Pescaria { get; set; } = null!;
     public IList<GaleriaAgendaPescaria> Galeria { get; set; } = [];
+    public FaturaAgendaPescaria? FaturaAgendaPescaria { get; set; }
 
     public void Excluir()
     {
@@ -59,7 +60,9 @@ public sealed class AgendaPescaria : BaseEntity
         short ano,
         short? horaInicial,
         short? horaFinal,
-        short? quantidadeDePescador
+        short? quantidadeDePescador,
+        decimal valor,
+        Guid guiaDePescaId
         )
     {
         var agendaPescaria = new AgendaPescaria(
@@ -76,6 +79,17 @@ public sealed class AgendaPescaria : BaseEntity
             horaInicial: horaInicial,
             horaFinal: horaFinal,
             quantidadeDePescador: quantidadeDePescador);
+
+        agendaPescaria.FaturaAgendaPescaria = new FaturaAgendaPescaria(
+            id: Guid.NewGuid(),
+            dataDeCadastro: DateTime.UtcNow,
+            dataDeAtualizacao: DateTime.UtcNow,
+            excluido: false,
+            agendaPescariaId: agendaPescaria.Id,
+            dataDeVencimento: new DateTime(year: ano, month: mes, day: dia).Date,
+            valor: valor,
+            descricao: $"Agendamento para data: {dia.ToString().PadLeft(2, '0')}/{mes.ToString().PadLeft(2, '0')}/{ano.ToString().PadLeft(2, '0')}",
+            guiaDePescaId: guiaDePescaId);
 
         return agendaPescaria;
     }
