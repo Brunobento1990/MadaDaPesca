@@ -51,8 +51,8 @@ public sealed class GuiaDePesca : BaseEntity
 
         var pessoa = new Pessoa(
             id: Guid.NewGuid(),
-            dataDeCadastro: DateTime.UtcNow,
-            dataDeAtualizacao: DateTime.UtcNow,
+            dataDeCadastro: DateTime.Now,
+            dataDeAtualizacao: DateTime.Now,
             excluido: false,
             cpf: cpf,
             nome: nome,
@@ -65,8 +65,8 @@ public sealed class GuiaDePesca : BaseEntity
 
         return new GuiaDePesca(
             id: Guid.NewGuid(),
-            dataDeCadastro: DateTime.UtcNow,
-            dataDeAtualizacao: DateTime.UtcNow,
+            dataDeCadastro: DateTime.Now,
+            dataDeAtualizacao: DateTime.Now,
             excluido: false,
             pessoaId: pessoa.Id,
             acessoGuiaDePescaId: acessoGuiaDePesca.Id,
@@ -87,7 +87,7 @@ public sealed class GuiaDePesca : BaseEntity
             email: email,
             telefone: telefone);
 
-        DataDeAtualizacao = DateTime.UtcNow;
+        DataDeAtualizacao = DateTime.Now;
     }
 
     public void ValidarAcesso()

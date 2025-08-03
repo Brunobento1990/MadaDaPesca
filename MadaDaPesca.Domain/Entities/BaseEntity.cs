@@ -11,7 +11,7 @@ public abstract class BaseEntity
     }
 
     public Guid Id { get; protected set; }
-    public DateTime DataDeCadastro { get; protected set; } = DateTime.UtcNow;
-    public DateTime DataDeAtualizacao { get; protected set; } = DateTime.UtcNow;
+    public DateTime DataDeCadastro { get; protected set; } = DateTime.Now;
+    public DateTime DataDeAtualizacao { get; protected set; } = DateTime.Now;
     public bool Excluido { get; protected set; } = false;
 }

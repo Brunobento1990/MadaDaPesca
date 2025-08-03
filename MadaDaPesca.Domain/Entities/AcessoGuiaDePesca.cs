@@ -34,7 +34,7 @@ public sealed class AcessoGuiaDePesca
     public void EsqueceuSenha()
     {
         TokenEsqueceuSenha = Guid.NewGuid();
-        ExpiracaoTokenEsqueceuSenha = DateTime.UtcNow.AddHours(1);
+        ExpiracaoTokenEsqueceuSenha = DateTime.Now.AddHours(1);
     }
 
     public void RecuperarSenha(string senha)
@@ -43,7 +43,7 @@ public sealed class AcessoGuiaDePesca
         PrimeiroAcesso = false;
         TokenEsqueceuSenha = null;
         ExpiracaoTokenEsqueceuSenha = null;
-        TrocouSenha = DateTime.UtcNow;
+        TrocouSenha = DateTime.Now;
     }
 
     public void VerificarEmail(bool emailVerificado)

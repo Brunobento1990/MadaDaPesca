@@ -48,7 +48,7 @@ public sealed class AgendaPescaria : BaseEntity
     public void Excluir()
     {
         Excluido = true;
-        DataDeAtualizacao = DateTime.UtcNow;
+        DataDeAtualizacao = DateTime.Now;
     }
 
     public static AgendaPescaria Criar(
@@ -67,8 +67,8 @@ public sealed class AgendaPescaria : BaseEntity
     {
         var agendaPescaria = new AgendaPescaria(
             id: Guid.NewGuid(),
-            dataDeCadastro: DateTime.UtcNow,
-            dataDeAtualizacao: DateTime.UtcNow,
+            dataDeCadastro: DateTime.Now,
+            dataDeAtualizacao: DateTime.Now,
             excluido: false,
             observacao: observacao,
             pescariaId: pescariaId,
@@ -82,8 +82,8 @@ public sealed class AgendaPescaria : BaseEntity
 
         agendaPescaria.FaturaAgendaPescaria = new FaturaAgendaPescaria(
             id: Guid.NewGuid(),
-            dataDeCadastro: DateTime.UtcNow,
-            dataDeAtualizacao: DateTime.UtcNow,
+            dataDeCadastro: DateTime.Now,
+            dataDeAtualizacao: DateTime.Now,
             excluido: false,
             agendaPescariaId: agendaPescaria.Id,
             dataDeVencimento: new DateTime(year: ano, month: mes, day: dia).Date,
@@ -106,7 +106,7 @@ public sealed class AgendaPescaria : BaseEntity
         Status = status;
         HoraInicial = horaInicial;
         HoraFinal = horaFinal;
-        DataDeAtualizacao = DateTime.UtcNow;
+        DataDeAtualizacao = DateTime.Now;
         QuantidadeDePescador = quantidadeDePescador;
         PescariaId = pescariaId;
     }
@@ -119,6 +119,6 @@ public sealed class AgendaPescaria : BaseEntity
         Mes = (short)dataDeAgendamento.Month;
         Ano = (short)dataDeAgendamento.Year;
 
-        DataDeAtualizacao = DateTime.UtcNow;
+        DataDeAtualizacao = DateTime.Now;
     }
 }

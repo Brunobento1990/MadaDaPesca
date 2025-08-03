@@ -91,7 +91,7 @@ public sealed class Pescaria : BaseEntity
     public void Excluir()
     {
         Excluido = true;
-        DataDeAtualizacao = DateTime.UtcNow;
+        DataDeAtualizacao = DateTime.Now;
     }
 
     public void Editar(
@@ -159,8 +159,8 @@ public sealed class Pescaria : BaseEntity
     {
         var pescaria = new Pescaria(
             id: Guid.NewGuid(),
-            dataDeCadastro: DateTime.UtcNow,
-            dataDeAtualizacao: DateTime.UtcNow,
+            dataDeCadastro: DateTime.Now,
+            dataDeAtualizacao: DateTime.Now,
             excluido: false,
             titulo: titulo,
             descricao: descricao,
@@ -247,7 +247,7 @@ public sealed class Pescaria : BaseEntity
             throw new ValidacaoException("A data de agendamento inválida.");
         }
 
-        if (dataDeAgendamento.Date < DateTime.UtcNow.Date)
+        if (dataDeAgendamento.Date < DateTime.Now.Date)
         {
             throw new ValidacaoException("Não é possível agendar uma pescaria para uma data anterior a hoje.");
         }

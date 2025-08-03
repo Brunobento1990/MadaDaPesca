@@ -24,8 +24,8 @@ internal class TokenService : ITokenService
         Key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
         Credenciais = new SigningCredentials(Key, SecurityAlgorithms.HmacSha256);
-        _expiresToken = DateTime.UtcNow.AddMinutes(int.Parse(configuration["Jwt:ExpireInMinutes"]!));
-        _expiresRefreshToken = DateTime.UtcNow.AddDays(int.Parse(configuration["Jwt:ExpireRefreshInDays"]!));
+        _expiresToken = DateTime.Now.AddMinutes(int.Parse(configuration["Jwt:ExpireInMinutes"]!));
+        _expiresRefreshToken = DateTime.Now.AddDays(int.Parse(configuration["Jwt:ExpireRefreshInDays"]!));
         Issue = _configuration["Jwt:Issue"]!;
         Audience = _configuration["Jwt:Audience"]!;
     }

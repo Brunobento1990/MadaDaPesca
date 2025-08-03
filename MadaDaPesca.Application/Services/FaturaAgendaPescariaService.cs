@@ -42,8 +42,8 @@ internal class FaturaAgendaPescariaService : IFaturaAgendaPescariaService
 
         fatura = new FaturaAgendaPescaria(
             id: Guid.NewGuid(),
-            dataDeCadastro: DateTime.UtcNow,
-            dataDeAtualizacao: DateTime.UtcNow,
+            dataDeCadastro: DateTime.Now,
+            dataDeAtualizacao: DateTime.Now,
             excluido: false,
             agendaPescariaId: gerarFaturaAgendaPescariaDTO.AgendaPescariaId,
             dataDeVencimento: gerarFaturaAgendaPescariaDTO.DataDeVencimento,

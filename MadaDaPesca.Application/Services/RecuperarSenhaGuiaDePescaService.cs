@@ -27,7 +27,7 @@ internal class RecuperarSenhaGuiaDePescaService : IRecuperarSenhaGuiaDePescaServ
             throw new ValidacaoException("Token inválido ou expirado");
         }
 
-        if ((guia.AcessoGuiaDePesca.ExpiracaoTokenEsqueceuSenha.Value - DateTime.UtcNow).Minutes > 60)
+        if ((guia.AcessoGuiaDePesca.ExpiracaoTokenEsqueceuSenha.Value - DateTime.Now).Minutes > 60)
         {
             throw new ValidacaoException("Token expirado, recupere a senha novamente");
         }

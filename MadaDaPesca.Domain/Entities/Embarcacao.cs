@@ -74,8 +74,8 @@ public sealed class Embarcacao : BaseEntity
     {
         var embarcacao = new Embarcacao(
             Guid.NewGuid(),
-            DateTime.UtcNow,
-            DateTime.UtcNow,
+            DateTime.Now,
+            DateTime.Now,
             false,
             nome,
             motor,

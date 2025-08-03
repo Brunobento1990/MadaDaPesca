@@ -64,8 +64,8 @@ public class FaturaAgendaPescaria : BaseEntity
 
         return new TransacaoFaturaAgendaPescaria(
             id: Guid.NewGuid(),
-            dataDeCadastro: DateTime.UtcNow,
-            dataDeAtualizacao: DateTime.UtcNow,
+            dataDeCadastro: DateTime.Now,
+            dataDeAtualizacao: DateTime.Now,
             excluido: false,
             faturaAgendaPescariaId: Id,
             valor: valor,
@@ -86,8 +86,8 @@ public class FaturaAgendaPescaria : BaseEntity
 
         return new TransacaoFaturaAgendaPescaria(
             id: Guid.NewGuid(),
-            dataDeCadastro: DateTime.UtcNow,
-            dataDeAtualizacao: DateTime.UtcNow,
+            dataDeCadastro: DateTime.Now,
+            dataDeAtualizacao: DateTime.Now,
             excluido: false,
             faturaAgendaPescariaId: Id,
             valor: ValorRecebido.Value,

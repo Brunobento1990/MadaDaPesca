@@ -1,5 +1,7 @@
 ﻿using MadaDaPesca.Domain.Entities;
+using MadaDaPesca.Domain.Enum;
 using MadaDaPesca.Domain.Interfaces;
+using MadaDaPesca.Domain.Models;
 using MadaDaPesca.Infra.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +30,21 @@ internal class FaturaAgendaPescariaRepository : GenericRepository<FaturaAgendaPe
                 !x.Excluido &&
                 x.DataDeVencimento.Month == data.Month &&
                 x.DataDeVencimento.Year == data.Year)
+            .ToListAsync();
+    }
+
+    public async Task<IList<FaturaHomeModel>> TranasoesParaHomeAsync(Guid guiaDePescaId)
+    {
+        return await AppDbContext
+            .TransacoesFaturaAgenda
+            .AsNoTracking()
+            .Where(x => x.FaturaAgendaPescaria.GuiaDePescaId == guiaDePescaId && !x.Excluido)
+            .GroupBy(x => x.DataDeCadastro.Date)
+            .Select(g => new FaturaHomeModel
+            {
+                Data = g.Key,
+                Valor = g.Sum(x => x.TipoTransacao == TipoTransacaoEnum.Entrada ? x.Valor : -x.Valor)
+            })
             .ToListAsync();
     }
 
