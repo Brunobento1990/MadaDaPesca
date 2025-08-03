@@ -45,6 +45,7 @@ internal class FaturaAgendaPescariaRepository : GenericRepository<FaturaAgendaPe
                 Data = g.Key,
                 Valor = g.Sum(x => x.TipoTransacao == TipoTransacaoEnum.Entrada ? x.Valor : -x.Valor)
             })
+            .OrderBy(x => x.Data)
             .ToListAsync();
     }
 
