@@ -1,18 +1,20 @@
 ﻿using MadaDaPesca.Domain.Enum;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 
 namespace MadaDaPesca.Application.Services;
 
 public static class LogService
 {
-    public static void ConfigureLog(string url)
+    public static void ConfigureLog(this WebApplicationBuilder builder, IConfiguration configuration)
     {
         Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Warning()
-            .Enrich.FromLogContext()
-            .WriteTo.Console()
-            .WriteTo.Seq(url)
+            .ReadFrom.Configuration(configuration)
+            .WriteTo.Seq(builder.Configuration["Seq:Url"]!)
             .CreateLogger();
+
+        builder.Host.UseSerilog();
     }
 
     public static void LogApi(string mensagem, Exception? exception = null, TipoLogApiEnum tipoLogApiEnum = TipoLogApiEnum.Error)

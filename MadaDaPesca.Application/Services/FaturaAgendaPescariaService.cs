@@ -4,6 +4,7 @@ using MadaDaPesca.Application.ViewModel;
 using MadaDaPesca.Domain.Entities;
 using MadaDaPesca.Domain.Exceptions;
 using MadaDaPesca.Domain.Interfaces;
+using MadaDaPesca.Domain.Models;
 
 namespace MadaDaPesca.Application.Services;
 
@@ -16,6 +17,19 @@ internal class FaturaAgendaPescariaService : IFaturaAgendaPescariaService
     {
         _faturaAgendaPescariaRepository = faturaAgendaPescariaRepository;
         _guiaDePescaLogado = guiaDePescaLogado;
+    }
+
+    public async Task<FaturaAgendaPescariaViewModel> EstornarFaturaDaAgendaAsync(EstornarFaturaAgendaPescariaDTO estornarFaturaAgendaPescariaDTO)
+    {
+        var fatura = await _faturaAgendaPescariaRepository.ObterPorIdAsync(estornarFaturaAgendaPescariaDTO.Id, _guiaDePescaLogado.Id)
+            ?? throw new ValidacaoException("Não foi possível localizar a fatura selecionada");
+
+        var estorno = fatura.Estornar(estornarFaturaAgendaPescariaDTO.Descricao);
+
+        await _faturaAgendaPescariaRepository.AddTransacaoAsync(estorno);
+        await _faturaAgendaPescariaRepository.SaveChangesAsync();
+
+        return (FaturaAgendaPescariaViewModel)fatura;
     }
 
     public async Task<FaturaAgendaPescariaViewModel> GerarFaturaDaAgendaAsync(GerarFaturaAgendaPescariaDTO gerarFaturaAgendaPescariaDTO)
@@ -51,6 +65,13 @@ internal class FaturaAgendaPescariaService : IFaturaAgendaPescariaService
         return (FaturaAgendaPescariaViewModel)fatura;
     }
 
+    public async Task<FaturaAgendaPescariaViewModel> ObterPorIdAsync(Guid id)
+    {
+        var fatura = await _faturaAgendaPescariaRepository.ObterPorIdAsync(id, _guiaDePescaLogado.Id)
+            ?? throw new ValidacaoException("Não foi possível localizar a fatura selecionada");
+        return (FaturaAgendaPescariaViewModel)fatura;
+    }
+
     public async Task<FaturaAgendaPescariaViewModel> PagarFaturaDaAgendaAsync(PagarFaturaAgendaPescariaDTO pagarFaturaAgendaPescariaDTO)
     {
         var fatura = await _faturaAgendaPescariaRepository.ObterPorIdAsync(pagarFaturaAgendaPescariaDTO.Id, _guiaDePescaLogado.Id)
@@ -65,5 +86,17 @@ internal class FaturaAgendaPescariaService : IFaturaAgendaPescariaService
         await _faturaAgendaPescariaRepository.SaveChangesAsync();
 
         return (FaturaAgendaPescariaViewModel)fatura;
+    }
+
+    public async Task<PaginacaoModel<FaturaAgendaPescariaViewModel>> PaginacaoAsync(FilterModel<FaturaAgendaPescaria> filterModel)
+    {
+        filterModel.GuiaDePescaId = _guiaDePescaLogado.Id;
+        var paginacao = await _faturaAgendaPescariaRepository.PaginacaoAsync(filterModel);
+
+        return new PaginacaoModel<FaturaAgendaPescariaViewModel>
+        {
+            Lista = paginacao.Lista.Select(x => (FaturaAgendaPescariaViewModel)x),
+            QuantidadeDePaginas = paginacao.QuantidadeDePaginas,
+        };
     }
 }

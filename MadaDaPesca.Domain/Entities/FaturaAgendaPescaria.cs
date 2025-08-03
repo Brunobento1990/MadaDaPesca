@@ -31,7 +31,15 @@ public class FaturaAgendaPescaria : BaseEntity
     public GuiaDePesca GuiaDePesca { get; set; } = null!;
     public DateTime DataDeVencimento { get; private set; }
     public decimal Valor { get; private set; }
-    public decimal? ValorRecebido => Transacoes?.Where(x => x.TipoTransacao == Enum.TipoTransacaoEnum.Entrada)?.Sum(x => x.Valor);
+    public decimal? ValorRecebido
+    {
+        get
+        {
+            var valorRecebido = Transacoes?.Where(x => x.TipoTransacao == TipoTransacaoEnum.Entrada)?.Sum(x => x.Valor) ?? 0;
+            var valorEstornado = Transacoes?.Where(x => x.TipoTransacao == TipoTransacaoEnum.Saida)?.Sum(x => x.Valor) ?? 0;
+            return valorRecebido - valorEstornado;
+        }
+    }
     public decimal? ValorAReceber => !ValorRecebido.HasValue ? null : Valor - ValorRecebido.Value;
     public string? Descricao { get; private set; }
     public bool Vencida => DataDeVencimento.Date < DateTime.Now.Date && (ValorRecebido ?? 0) < Valor;
@@ -64,5 +72,27 @@ public class FaturaAgendaPescaria : BaseEntity
             descricao: descricao,
             meioDePagamento: meioDePagamentoEnum,
             tipoTransacao: TipoTransacaoEnum.Entrada);
+    }
+
+    public TransacaoFaturaAgendaPescaria Estornar(string? descricao)
+    {
+        if (!ValorRecebido.HasValue || ValorRecebido.Value <= 0)
+        {
+            throw new ValidacaoException("Não há valor para estornar");
+        }
+
+        var meioDePagamento = Transacoes?.LastOrDefault(x => x.TipoTransacao == TipoTransacaoEnum.Entrada)?.MeioDePagamento
+            ?? MeioDePagamentoEnum.Dinheiro;
+
+        return new TransacaoFaturaAgendaPescaria(
+            id: Guid.NewGuid(),
+            dataDeCadastro: DateTime.UtcNow,
+            dataDeAtualizacao: DateTime.UtcNow,
+            excluido: false,
+            faturaAgendaPescariaId: Id,
+            valor: ValorRecebido.Value,
+            descricao: descricao ?? "Estorno",
+            meioDePagamento: meioDePagamento,
+            tipoTransacao: TipoTransacaoEnum.Saida);
     }
 }

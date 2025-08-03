@@ -3,7 +3,6 @@ using MadaDaPesca.Application.DependencyInject;
 using MadaDaPesca.Application.Services;
 using MadaDaPesca.Domain.Interfaces;
 using MadaDaPesca.Infra.DependencyInject;
-using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,8 +25,7 @@ if (configurarHangFire)
     builder.Services.ConfigurarHangFire(builder.Configuration["ConnectionStrings:Hangfire"]!);
 }
 
-LogService.ConfigureLog(builder.Configuration["Seq:Url"]!);
-builder.Host.UseSerilog();
+builder.ConfigureLog(builder.Configuration);
 
 var app = builder.Build();
 
@@ -37,10 +35,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-//app.UseHttpsRedirection();
-
-app.UseSerilogRequestLogging();
 
 app.UseMiddlewareConfiguration();
 
@@ -52,6 +46,7 @@ app.MapControllers();
 
 using var scope = app.Services.CreateScope();
 var migrationServico = scope.ServiceProvider.GetService<IMigrationRepository>();
+
 if (migrationServico != null)
 {
     await migrationServico.RodarMigrationAsync();

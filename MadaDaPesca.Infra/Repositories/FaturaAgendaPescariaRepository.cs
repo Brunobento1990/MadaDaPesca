@@ -46,6 +46,7 @@ internal class FaturaAgendaPescariaRepository : GenericRepository<FaturaAgendaPe
         return await AppDbContext
             .FaturasAgendaPescarias
             .Include(x => x.Transacoes)
+            .Include(x => x.AgendaPescaria)
             .FirstOrDefaultAsync(x => !x.Excluido && x.Id == id && x.GuiaDePescaId == guiaDePescaId);
     }
 }

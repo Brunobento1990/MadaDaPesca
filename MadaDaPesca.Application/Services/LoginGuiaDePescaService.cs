@@ -26,13 +26,13 @@ internal class LoginGuiaDePescaService : ILoginGuiaDePescaService
     public async Task<LoginGuiaDePescaViewModel> LoginAsync(LoginDTO loginDTO)
     {
         var guia = await _loginGuiaDePescaRepository.LoginAsync(loginDTO.Cpf.LimparMascaraCpf())
-            ?? throw new ValidacaoException("Não foi possível localizar seu cadastro");
+            ?? throw new ValidacaoException("E-mail ou senha inválidos");
 
         guia.ValidarAcesso();
 
         if (!PasswordAdapter.VerifyPassword(loginDTO.Senha, guia.AcessoGuiaDePesca.Senha))
         {
-            throw new ValidacaoException("Senha incorreta");
+            throw new ValidacaoException("E-mail ou senha inválidos");
         }
 
         var (token, refreshToken) = _tokenService.GerarTokenGuiaDePesca(guia);
