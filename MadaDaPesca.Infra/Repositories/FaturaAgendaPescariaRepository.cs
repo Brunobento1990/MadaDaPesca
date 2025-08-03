@@ -38,7 +38,7 @@ internal class FaturaAgendaPescariaRepository : GenericRepository<FaturaAgendaPe
         return await AppDbContext
             .TransacoesFaturaAgenda
             .AsNoTracking()
-            .Where(x => x.FaturaAgendaPescaria.GuiaDePescaId == guiaDePescaId && !x.Excluido)
+            .Where(x => x.FaturaAgendaPescaria.GuiaDePescaId == guiaDePescaId && !x.Excluido && x.DataDeCadastro.Year == DateTime.Now.Year)
             .GroupBy(x => x.DataDeCadastro.Date)
             .Select(g => new FaturaHomeModel
             {
