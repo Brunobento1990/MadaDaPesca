@@ -21,6 +21,7 @@ public class AppDbContext : DbContext
     public DbSet<BloqueioDataPescaria> DatasBloqueadas { get; set; }
     public DbSet<FaturaAgendaPescaria> FaturasAgendaPescarias { get; set; }
     public DbSet<TransacaoFaturaAgendaPescaria> TransacoesFaturaAgenda { get; set; }
+    public DbSet<GaleriaDeTrofeu> GaleriaDeTrofeus { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -34,6 +35,7 @@ public class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new PescariaConfiguration());
         modelBuilder.ApplyConfiguration(new PessoaConfiguration());
         modelBuilder.ApplyConfiguration(new AgendaPescariConfiguration());
+        modelBuilder.ApplyConfiguration(new GaleriaDeTrofeuConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }
