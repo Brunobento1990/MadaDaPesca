@@ -1,4 +1,5 @@
 ﻿using MadaDaPesca.Domain.Entities;
+using MadaDaPesca.Domain.Models;
 
 namespace MadaDaPesca.Domain.Interfaces;
 
@@ -11,4 +12,5 @@ public interface IAgendaPescariaRepository : IGenericRepository<AgendaPescaria>
     Task<AgendaPescaria?> ObterPorIdAsync(Guid id);
     Task AddGaleriaAsync(IList<GaleriaAgendaPescaria> galeriaAgendaPescarias);
     void ExcluirGaleria(IList<GaleriaAgendaPescaria> galeriaAgendaPescarias);
+    Task<VariacaoMensalAgendamentoHomeModel> VariacaoMensalAsync(Guid guiaDePescaId);
 }

@@ -64,7 +64,8 @@ internal class HomeGuiaDePescaService : IHomeGuiaDePescaService
             };
         }
 
-        homeViewModel.Transacoes = await _faturaAgendaPescariaRepository.TranasoesParaHomeAsync(_guiaDePescaLogado.Id);
+        homeViewModel.Transacoes = await _faturaAgendaPescariaRepository.TransacoesParaHomeAsync(_guiaDePescaLogado.Id);
+        homeViewModel.VariacaoMensalAgendamento = await _agendaPescariaRepository.VariacaoMensalAsync(_guiaDePescaLogado.Id);
 
         return homeViewModel;
     }

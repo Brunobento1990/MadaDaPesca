@@ -1,5 +1,6 @@
 ﻿using MadaDaPesca.Domain.Entities;
 using MadaDaPesca.Domain.Interfaces;
+using MadaDaPesca.Domain.Models;
 using MadaDaPesca.Infra.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -65,5 +66,52 @@ internal class AgendaPescariaRepository : GenericRepository<AgendaPescaria>, IAg
                 .ThenInclude(x => x.DatasBloqueadas)
             .Include(x => x.Galeria)
             .FirstOrDefaultAsync(a => a.Id == id && !a.Excluido);
+    }
+
+    public async Task<VariacaoMensalAgendamentoHomeModel> VariacaoMensalAsync(Guid guiaDePescaId)
+    {
+        var hoje = DateTime.Today;
+        var mes = hoje.Month;
+        var anoAtual = hoje.Year;
+        var anoAnterior = anoAtual - 1;
+
+        var totais = await AppDbContext
+            .AgendaPescarias
+            .AsNoTracking()
+            .Where(i =>
+                i.Mes == mes &&
+                (i.Ano == anoAtual || i.Ano == anoAnterior)
+            )
+            .GroupBy(i => i.Ano)
+            .Select(g => new
+            {
+                Ano = g.Key,
+                Total = g.Count()
+            })
+            .ToListAsync();
+
+        var totalAnoAtual = totais.FirstOrDefault(x => x.Ano == anoAtual)?.Total ?? 0;
+        var totalAnoAnterior = totais.FirstOrDefault(x => x.Ano == anoAnterior)?.Total ?? 0;
+
+        decimal variacao = 0;
+
+        if (totalAnoAnterior == 0)
+        {
+            variacao = totalAnoAtual == 0 ? 0 : 100;
+        }
+        else
+        {
+            variacao = (decimal)(totalAnoAtual - totalAnoAnterior) / totalAnoAnterior * 100;
+        }
+
+        return new VariacaoMensalAgendamentoHomeModel()
+        {
+            Mes = mes,
+            TotalAnoAnterior = totalAnoAnterior,
+            TotalAnoAtual = totalAnoAtual,
+            Porcentagem = variacao,
+            AnoAnterior = anoAnterior,
+            AnoAtual = anoAtual
+        };
     }
 }

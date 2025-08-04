@@ -10,4 +10,5 @@ public class HomeViewModel
     public IEnumerable<AgendaPescariaViewModel> AgendaDeAmanha { get; set; } = [];
     public FaturaHomeViewModel? Fatura { get; set; }
     public IEnumerable<FaturaHomeModel> Transacoes { get; set; } = [];
+    public VariacaoMensalAgendamentoHomeModel VariacaoMensalAgendamento { get; set; } = null!;
 }

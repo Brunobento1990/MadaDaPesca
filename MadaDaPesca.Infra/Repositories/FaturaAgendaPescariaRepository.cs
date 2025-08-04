@@ -33,7 +33,7 @@ internal class FaturaAgendaPescariaRepository : GenericRepository<FaturaAgendaPe
             .ToListAsync();
     }
 
-    public async Task<IList<FaturaHomeModel>> TranasoesParaHomeAsync(Guid guiaDePescaId)
+    public async Task<IList<FaturaHomeModel>> TransacoesParaHomeAsync(Guid guiaDePescaId)
     {
         return await AppDbContext
             .TransacoesFaturaAgenda
