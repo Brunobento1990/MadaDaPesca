@@ -152,4 +152,38 @@ internal class GuiaDePescaService : IGuiaDePescaService
 
         return (GuiaDePescaViewModel)guia;
     }
+
+    public async Task<GuiaDePescaViewModel> ObterPerfilAsyncAsync(Guid id)
+    {
+        var guia = await _guiaDePescaRepository.ObterPoraPerfilAsync(id)
+            ?? throw new ValidacaoException("Guia de pesca não encontrado.");
+
+        var guiaViewModel = (GuiaDePescaViewModel)guia;
+        guiaViewModel.Pescarias = [];
+        guiaViewModel.Embarcacoes = [];
+        guiaViewModel.GaleriaDeTrofeu = [];
+        guiaViewModel.Pessoa.Cpf = null!;
+
+        if (guia.Pescarias?.Count > 0)
+        {
+            foreach (var item in guia.Pescarias)
+            {
+                var pescariaViewModel = (PescariaViewModel)item;
+
+                pescariaViewModel.GuiaDePesca = null!;
+                guiaViewModel.Pescarias.Add(pescariaViewModel);
+            }
+        }
+
+        if (guia.GaleriaDeTrofeu?.Count > 0)
+        {
+            foreach (var item in guia.GaleriaDeTrofeu)
+            {
+                var galeriaDeTrofeuViewModel = (GaleriaDeTrofeuViewModel)item;
+                guiaViewModel.GaleriaDeTrofeu.Add(galeriaDeTrofeuViewModel);
+            }
+        }
+
+        return guiaViewModel;
+    }
 }

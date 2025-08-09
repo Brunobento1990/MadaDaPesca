@@ -12,10 +12,12 @@ namespace MadaDaPesca.Api.Controllers;
 public class HomeController : ControllerBase
 {
     private readonly IHomeGuiaDePescaService _homeGuiaDePescaService;
+    private readonly IHomePescadorService _homePescadorService;
 
-    public HomeController(IHomeGuiaDePescaService homeGuiaDePescaService)
+    public HomeController(IHomeGuiaDePescaService homeGuiaDePescaService, IHomePescadorService homePescadorService)
     {
         _homeGuiaDePescaService = homeGuiaDePescaService;
+        _homePescadorService = homePescadorService;
     }
 
     [HttpGet("guia-de-pesca")]
@@ -26,5 +28,14 @@ public class HomeController : ControllerBase
     {
         var homeViewModel = await _homeGuiaDePescaService.ObterAsync(homeDTO);
         return Ok(homeViewModel);
+    }
+
+    [HttpGet("pescador")]
+    [ProducesResponseType<HomePescadorViewModel>(200)]
+    [ProducesResponseType<ErrorViewModel>(400)]
+    public async Task<IActionResult> Pescador()
+    {
+        var home = await _homePescadorService.HomeAsync();
+        return Ok(home);
     }
 }

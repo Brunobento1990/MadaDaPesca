@@ -12,6 +12,14 @@ public class AgendarPescariaDTO
     public virtual StatusAgendaPescariaEnum? Status { get; set; }
     public short? HoraInicial { get; set; }
     public short? HoraFinal { get; set; }
+    public FaturaAgendaCriarDTO? Fatura { get; set; }
+}
+
+public class FaturaAgendaCriarDTO
+{
+    public DateTime? DataDeVencimento { get; set; }
+    public decimal? Valor { get; set; }
+    public decimal? ValorDeEntrada { get; set; }
 }
 
 public class GaleriaAgendaPescariaDTO

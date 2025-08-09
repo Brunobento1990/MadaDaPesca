@@ -62,7 +62,10 @@ public sealed class AgendaPescaria : BaseEntity
         short? horaFinal,
         short? quantidadeDePescador,
         decimal valor,
-        Guid guiaDePescaId
+        Guid guiaDePescaId,
+        decimal? valorDaFatura,
+        DateTime? dataDeVencimento,
+        decimal? valorDeEntrada
         )
     {
         var agendaPescaria = new AgendaPescaria(
@@ -86,10 +89,19 @@ public sealed class AgendaPescaria : BaseEntity
             dataDeAtualizacao: DateTime.Now,
             excluido: false,
             agendaPescariaId: agendaPescaria.Id,
-            dataDeVencimento: new DateTime(year: ano, month: mes, day: dia).Date,
-            valor: valor,
+            dataDeVencimento: dataDeVencimento.HasValue && dataDeVencimento.Value != default ? dataDeVencimento.Value : new DateTime(year: ano, month: mes, day: dia).Date,
+            valor: valorDaFatura.HasValue && valorDaFatura.Value > 0 ? valorDaFatura.Value : valor,
             descricao: $"Agendamento para data: {dia.ToString().PadLeft(2, '0')}/{mes.ToString().PadLeft(2, '0')}/{ano.ToString().PadLeft(2, '0')}",
             guiaDePescaId: guiaDePescaId);
+
+        if (valorDeEntrada.HasValue && valorDeEntrada.Value > 0)
+        {
+            agendaPescaria.FaturaAgendaPescaria.Transacoes = [];
+            agendaPescaria.FaturaAgendaPescaria.Transacoes.Add(agendaPescaria.FaturaAgendaPescaria.Pagar(
+                valor: valorDeEntrada.Value,
+                descricao: "Pagamento de entrada no agendamento",
+                meioDePagamentoEnum: MeioDePagamentoEnum.Dinheiro));
+        }
 
         return agendaPescaria;
     }

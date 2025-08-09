@@ -45,4 +45,13 @@ public class GuiaDePescaController : ControllerBase
         var guia = await _guiaDePescaService.EditarMinhaContaAsync(guiaDePescaEditar);
         return Ok(guia);
     }
+
+    [HttpGet("obter-perfil")]
+    [ProducesResponseType<GuiaDePescaViewModel>(200)]
+    [ProducesResponseType<ErrorViewModel>(400)]
+    public async Task<IActionResult> ObterPerfil([FromQuery] Guid id)
+    {
+        var guia = await _guiaDePescaService.ObterPerfilAsyncAsync(id);
+        return Ok(guia);
+    }
 }

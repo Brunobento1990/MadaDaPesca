@@ -36,7 +36,7 @@ internal class GuiaDePescaRepository : GenericRepository<GuiaDePesca>, IGuiaDePe
             .Include(g => g.Pessoa)
             .Where(x => x.Pessoa.Cpf == cpf || x.Pessoa.Email == email);
 
-        if( idDiferente.HasValue)
+        if (idDiferente.HasValue)
         {
             query = query.Where(x => x.Id != idDiferente.Value);
         }
@@ -59,6 +59,32 @@ internal class GuiaDePescaRepository : GenericRepository<GuiaDePesca>, IGuiaDePe
             .GuiasDePesca
             .Include(g => g.Pessoa)
             .Include(g => g.AcessoGuiaDePesca)
+
             .FirstOrDefaultAsync(x => x.AcessoGuiaDePesca.TokenEsqueceuSenha == tokenEsqueceuSenha);
+    }
+
+    public async Task<IList<GuiaDePesca>> HomePescadorAsync()
+    {
+        return await AppDbContext
+            .GuiasDePesca
+            .AsNoTracking()
+            .Include(x => x.Pessoa)
+            .Skip(0)
+            .Take(3)
+            .OrderByDescending(x => x.DataDeCadastro)
+            .Where(x => !x.Excluido)
+            .ToListAsync();
+    }
+
+    public async Task<GuiaDePesca?> ObterPoraPerfilAsync(Guid id)
+    {
+        return await AppDbContext
+            .GuiasDePesca
+            .AsNoTracking()
+            .Include(g => g.Pessoa)
+            .Include(g => g.Pescarias!)
+                .ThenInclude(x => x.Embarcacao)
+            .Include(g => g.GaleriaDeTrofeu)
+            .FirstOrDefaultAsync(x => x.Id == id && !x.Excluido);
     }
 }
