@@ -67,4 +67,14 @@ public class AgendaPescariaController : ControllerBase
         var agenda = await _agendaPescariaService.ObterPorIdAsync(id);
         return Ok(agenda);
     }
+
+    [HttpDelete("excluir")]
+    [Autentica]
+    [ProducesResponseType<AgendaPescariaViewModel>(200)]
+    [ProducesResponseType<ErrorViewModel>(400)]
+    public async Task<IActionResult> Excluir([FromQuery] Guid id)
+    {
+        await _agendaPescariaService.ExcluirAsync(id);
+        return Ok(new { Resultado = true });
+    }
 }

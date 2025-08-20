@@ -6,6 +6,7 @@ namespace MadaDaPesca.Application.Interfaces;
 public interface IAgendaPescariaService
 {
     Task<AgendaPescariaViewModel> ObterPorIdAsync(Guid id);
+    Task ExcluirAsync(Guid id);
     Task<AgendaPescariaViewModel> AgendarAsync(AgendarPescariaDTO agendarPescariaDTO);
     Task<AgendaPescariaViewModel> EditarAsync(EditarAgendaPescariaDTO editarAgendaPescariaDTO);
     Task<AgendaDoMesViewModel> AgendaDoMesAsync(short mes, short ano);

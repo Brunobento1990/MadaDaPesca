@@ -49,7 +49,7 @@ internal class AgendaPescariaRepository : GenericRepository<AgendaPescaria>, IAg
             .AgendaPescarias
             .AsNoTracking()
             .Include(x => x.Pescaria)
-            .Where(x => x.Pescaria.GuiaDePescaId == guiaDePescaId && x.Dia == dia && x.Mes == mes && x.Ano == ano)
+            .Where(x => x.Pescaria.GuiaDePescaId == guiaDePescaId && x.Dia == dia && x.Mes == mes && x.Ano == ano && !x.Excluido)
             .ToListAsync();
     }
 
@@ -79,6 +79,7 @@ internal class AgendaPescariaRepository : GenericRepository<AgendaPescaria>, IAg
             .AgendaPescarias
             .AsNoTracking()
             .Where(i =>
+                !i.Excluido &&
                 i.Mes == mes &&
                 (i.Ano == anoAtual || i.Ano == anoAnterior)
             )

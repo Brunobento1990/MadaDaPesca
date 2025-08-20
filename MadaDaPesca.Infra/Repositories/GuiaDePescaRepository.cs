@@ -34,7 +34,7 @@ internal class GuiaDePescaRepository : GenericRepository<GuiaDePesca>, IGuiaDePe
         var query = AppDbContext.GuiasDePesca
             .AsNoTracking()
             .Include(g => g.Pessoa)
-            .Where(x => x.Pessoa.Cpf == cpf || x.Pessoa.Email == email);
+            .Where(x => (x.Pessoa.Cpf == cpf || x.Pessoa.Email == email) && !x.Excluido && !x.Pessoa.Excluido);
 
         if (idDiferente.HasValue)
         {
@@ -59,8 +59,7 @@ internal class GuiaDePescaRepository : GenericRepository<GuiaDePesca>, IGuiaDePe
             .GuiasDePesca
             .Include(g => g.Pessoa)
             .Include(g => g.AcessoGuiaDePesca)
-
-            .FirstOrDefaultAsync(x => x.AcessoGuiaDePesca.TokenEsqueceuSenha == tokenEsqueceuSenha);
+            .FirstOrDefaultAsync(x => x.AcessoGuiaDePesca.TokenEsqueceuSenha == tokenEsqueceuSenha && !x.Excluido && !x.Pessoa.Excluido);
     }
 
     public async Task<IList<GuiaDePesca>> HomePescadorAsync()

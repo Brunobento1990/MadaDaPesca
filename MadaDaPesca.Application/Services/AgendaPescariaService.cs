@@ -13,13 +13,15 @@ internal class AgendaPescariaService : IAgendaPescariaService
     private readonly IPescariaRepository _pescariaRepository;
     private readonly IGuiaDePescaLogado _guiaDePescaLogado;
     private readonly IUploadImagemService _uploadImagemService;
+    private readonly IFaturaAgendaPescariaService _faturaAgendaPescariaService;
 
-    public AgendaPescariaService(IAgendaPescariaRepository agendaPescariaRepository, IGuiaDePescaLogado guiaDePescaLogado, IPescariaRepository pescariaRepository, IUploadImagemService uploadImagemService)
+    public AgendaPescariaService(IAgendaPescariaRepository agendaPescariaRepository, IGuiaDePescaLogado guiaDePescaLogado, IPescariaRepository pescariaRepository, IUploadImagemService uploadImagemService, IFaturaAgendaPescariaService faturaAgendaPescariaService)
     {
         _agendaPescariaRepository = agendaPescariaRepository;
         _guiaDePescaLogado = guiaDePescaLogado;
         _pescariaRepository = pescariaRepository;
         _uploadImagemService = uploadImagemService;
+        _faturaAgendaPescariaService = faturaAgendaPescariaService;
     }
     public async Task<AgendaDoMesViewModel> AgendaDoMesAsync(short mes, short ano)
     {
@@ -137,11 +139,30 @@ internal class AgendaPescariaService : IAgendaPescariaService
             }
         }
 
+        if (agenda.Status == Domain.Enum.StatusAgendaPescariaEnum.Cancelada)
+        {
+            await _faturaAgendaPescariaService.EstornarAgendaCanceladaAsync(agenda.Id);
+        }
+
         _agendaPescariaRepository.Editar(agenda);
         await _agendaPescariaRepository.SaveChangesAsync();
 
         return (AgendaPescariaViewModel)agenda;
     }
+
+    public async Task ExcluirAsync(Guid id)
+    {
+        var agenda = await _agendaPescariaRepository.ObterPorIdAsync(id)
+            ?? throw new ValidacaoException("Não foi possível localizar o agendamento selecionado");
+
+        agenda.Excluir();
+
+        await _faturaAgendaPescariaService.EstornarAgendaCanceladaAsync(agenda.Id);
+
+        _agendaPescariaRepository.Editar(agenda);
+        await _agendaPescariaRepository.SaveChangesAsync();
+    }
+
     public async Task<AgendaPescariaViewModel> ObterPorIdAsync(Guid id)
     {
         var agenda = await _agendaPescariaRepository.ObterPorIdAsync(id)

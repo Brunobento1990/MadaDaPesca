@@ -74,6 +74,31 @@ public class FaturaAgendaPescaria : BaseEntity
             tipoTransacao: TipoTransacaoEnum.Entrada);
     }
 
+    public TransacaoFaturaAgendaPescaria? Cancelar()
+    {
+        Excluido = true;
+        DataDeAtualizacao = DateTime.Now;
+
+        if (!ValorAReceber.HasValue || ValorAReceber.Value <= 0)
+        {
+            return null;
+        }
+
+        var meioDePagamento = Transacoes?.LastOrDefault(x => x.TipoTransacao == TipoTransacaoEnum.Entrada)?.MeioDePagamento
+            ?? MeioDePagamentoEnum.Dinheiro;
+
+        return new TransacaoFaturaAgendaPescaria(
+            id: Guid.NewGuid(),
+            dataDeCadastro: DateTime.Now,
+            dataDeAtualizacao: DateTime.Now,
+            excluido: false,
+            faturaAgendaPescariaId: Id,
+            valor: ValorAReceber.Value,
+            descricao: "Estorno referente ao cancelamento da agenda",
+            meioDePagamento: meioDePagamento,
+            tipoTransacao: TipoTransacaoEnum.Saida);
+    }
+
     public TransacaoFaturaAgendaPescaria Estornar(string? descricao)
     {
         if (!ValorRecebido.HasValue || ValorRecebido.Value <= 0)

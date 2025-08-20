@@ -19,6 +19,21 @@ internal class FaturaAgendaPescariaService : IFaturaAgendaPescariaService
         _guiaDePescaLogado = guiaDePescaLogado;
     }
 
+    public async Task EstornarAgendaCanceladaAsync(Guid agendaPescariaId)
+    {
+        var fatura = await _faturaAgendaPescariaRepository.ObterFaturaDoAgendamentoAsync(agendaPescariaId, _guiaDePescaLogado.Id);
+        if (fatura == null)
+        {
+            return;
+        }
+        var transacaoestorno = fatura.Cancelar();
+        if (transacaoestorno == null)
+        {
+            return;
+        }
+        await _faturaAgendaPescariaRepository.AddTransacaoAsync(transacaoestorno);
+    }
+
     public async Task<FaturaAgendaPescariaViewModel> EstornarFaturaDaAgendaAsync(EstornarFaturaAgendaPescariaDTO estornarFaturaAgendaPescariaDTO)
     {
         var fatura = await _faturaAgendaPescariaRepository.ObterPorIdAsync(estornarFaturaAgendaPescariaDTO.Id, _guiaDePescaLogado.Id)
